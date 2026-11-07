@@ -1,3 +1,10 @@
+/* 맨 위의 이름·소개와 대표작을 바꾸려면 여기서 수정하세요.
+   featured에는 아래 목록의 id를 원하는 순서대로 적습니다. */
+window.profile = {
+  "name": "",
+  "intro": "마음을 돌보고 일상을 가볍게 하는 작은 웹앱을 만들어요.",
+  "featured": ["memory", "character-studio", "daily"]
+};
 /* 카드 하나를 더하려면 아래 배열에 항목을 복사해 제목, 설명, 주소를 바꾸세요.
    빼려면 그 항목을 지우세요. image는 필요할 때만 넣습니다. */
 window.projects = [

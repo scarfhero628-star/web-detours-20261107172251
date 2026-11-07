@@ -2,7 +2,18 @@ const cards = document.getElementById('cards');
 const search = document.getElementById('search');
 const filters = document.getElementById('filters');
 const entries = window.projects;
+const profile = window.profile;
+const featuredSection = document.getElementById('featured');
+const byId = new Map(entries.map(project => [project.id, project]));
+const featuredEntries = [...new Set(profile.featured)].map(id => byId.get(id)).filter(Boolean);
+const featuredIds = new Set(featuredEntries.map(project => project.id));
 let category = '전체';
+
+if (profile.name) {
+  document.getElementById('title').textContent = profile.name;
+  document.title = profile.name + ' · 딴짓 수집함';
+}
+document.getElementById('intro').textContent = profile.intro;
 
 function renderCard(project) {
   const card = document.createElement('a');
@@ -44,7 +55,11 @@ function renderCard(project) {
 
 function render() {
   const term = search.value.trim().toLocaleLowerCase('ko');
-  const visible = entries.filter(project =>
+  const narrowing = term.length > 0 || category !== '전체';
+  featuredSection.hidden = narrowing || featuredEntries.length === 0;
+  document.getElementById('collection').textContent = narrowing ? '찾은 딴짓' : '더 많은 딴짓';
+  const collection = narrowing ? entries : entries.filter(project => !featuredIds.has(project.id));
+  const visible = collection.filter(project =>
     (category === '전체' || project.category === category) &&
     (project.title + ' ' + project.description).toLocaleLowerCase('ko').includes(term)
   );
@@ -65,5 +80,6 @@ for (const name of ['전체', ...new Set(entries.map(project => project.category
   });
   filters.append(button);
 }
+document.getElementById('featured-cards').replaceChildren(...featuredEntries.map(renderCard));
 search.addEventListener('input', render);
 render();
