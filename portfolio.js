@@ -7,7 +7,8 @@ let category = '전체';
 function renderCard(project) {
   const card = document.createElement('a');
   card.className = 'card';
-  card.href = project.url;
+  const localFolder = location.protocol === 'file:' && project.url.startsWith('apps/') && project.url.endsWith('/');
+  card.href = localFolder ? project.url + 'index.html' : project.url;
   card.target = '_blank';
   card.rel = 'noopener';
   const art = document.createElement('div');
