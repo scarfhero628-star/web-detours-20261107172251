@@ -1,0 +1,17 @@
+{
+  "id": "./",
+  "name": "모모의 작은 방",
+  "short_name": "모모",
+  "description": "먹이를 주고 쓰다듬으며 키우는 작은 숲속 친구 모모",
+  "lang": "ko",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "display_override": ["fullscreen", "standalone"],
+  "background_color": "#f2efe5",
+  "theme_color": "#f2efe5",
+  "icons": [
+    {"src":"./icons/icon-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},
+    {"src":"./icons/icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+  ]
+}

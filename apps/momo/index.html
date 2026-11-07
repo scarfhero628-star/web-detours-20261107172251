@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f2efe5"><title>모모의 작은 방</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f2efe5;color:#535849;font-family:'Malgun Gothic',system-ui,sans-serif}main{width:min(100% - 36px,560px);margin:auto;padding:35px 0}.eyebrow{font-size:11px;letter-spacing:.18em;color:#a1a18c;margin:0 0 12px}header{text-align:center}h1{font-size:28px;font-weight:500;letter-spacing:-.05em;margin:0 0 10px}.intro{font-size:13px;color:#9a9d8b;margin:0 0 24px}.room{height:330px;position:relative;display:grid;place-items:center;border:0;border-radius:28px;overflow:hidden;background:#edf0e4}.rug{position:absolute;bottom:25px;width:260px;height:55px;border-radius:50%;background:#ccd8b9;box-shadow:inset 0 0 0 6px #d8e2c9}.pet{width:245px;height:270px;position:relative;background:none;border:0;padding:0;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}.pet svg{width:100%;height:100%;overflow:visible}.body{transform-origin:130px 225px;animation:breathe 3.8s ease-in-out infinite}.pet.loved .body{animation:wiggle .65s ease-in-out}.pet.eating .body{animation:munch .65s ease-in-out}.heart{position:absolute;left:50%;top:45px;font-size:35px;color:#ce8b91;opacity:0;pointer-events:none}.loved .heart{animation:heart 1s ease-out}.food-fx{position:absolute;bottom:70px;left:calc(50% - 22px);font-size:38px;opacity:0;pointer-events:none}.eating .food-fx{animation:snack .8s ease-in-out}.message{text-align:center;min-height:48px;margin:19px 0 13px;font-size:14px;color:#7d886c;line-height:1.8}.stats{background:#fffaf2;border:1px solid #e4e0d1;border-radius:20px;padding:22px;display:grid;gap:22px}.stat-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;font-size:14px}.stat-head output{font-size:12px;color:#969780}.track{height:12px;background:#ecebdd;border-radius:99px;overflow:hidden}.fill{height:100%;width:0;border-radius:99px;transition:width .5s ease,background .5s ease}.hint{font-size:11px;color:#a1a28f;line-height:1.7;margin:10px 0 0}.actions{display:flex;gap:12px;margin-top:19px}.actions button{flex:1;border:0;border-radius:14px;padding:17px 10px;font:600 15px 'Malgun Gothic',system-ui,sans-serif;cursor:pointer;background:#819c70;color:#fffdf4;transition:transform .15s,background .2s}.actions button:last-child{background:#dfc5b1;color:#745f4d}.actions button:hover{filter:brightness(1.03)}.actions button:active{transform:scale(.97)}button:focus-visible{outline:3px solid #b29a73;outline-offset:4px}.footnote{text-align:center;font-size:11px;line-height:1.9;color:#a2a58f;margin:20px 0 0}#save-status{font-size:11px;color:#a28a6c;text-align:center;min-height:16px;margin:6px 0 0}@keyframes breathe{50%{transform:scale(1.02,.98)}}@keyframes wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-5deg) translateY(-7px)}70%{transform:rotate(5deg) translateY(-4px)}}@keyframes munch{0%,100%{transform:scale(1)}25%,75%{transform:scale(1.04,.96)}50%{transform:scale(.98,1.02)}}@keyframes heart{0%{opacity:0;transform:translate(-50%,15px) scale(.5)}20%{opacity:1}100%{opacity:0;transform:translate(-50%,-45px) scale(1.1)}}@keyframes snack{0%{opacity:0;transform:translateY(14px)}25%,65%{opacity:1}100%{opacity:0;transform:translateY(-25px) scale(.4)}}@media(prefers-reduced-motion:reduce){.body,.pet.loved .body,.pet.eating .body,.loved .heart,.eating .food-fx{animation:none}.fill,.actions button{transition:none}}@media(max-width:420px){main{padding-top:25px}.room{height:300px}}
+.growth{margin:18px 5px 0}.growth-title{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:10px;font-size:13px}.growth-title strong{font-weight:500;color:#718360}.growth-title span{font-size:11px;color:#9a9f8b}#growth-fill{background:#a2b78b}#growth-next{margin:8px 0 0;font-size:11px;color:#9a9f8b;line-height:1.7}
+body{min-height:100svh}main{padding-top:max(26px,env(safe-area-inset-top));padding-bottom:max(26px,env(safe-area-inset-bottom))}.install-area{text-align:center;margin:14px 0}.install-button{border:1px solid #d8dfce;border-radius:999px;background:transparent;color:#839276;font:12px 'Malgun Gothic',system-ui,sans-serif;padding:10px 18px;cursor:pointer}.install-help{margin:12px 0 0;padding:14px;background:#fffaf2;border-radius:12px;color:#8b947b;font-size:12px;line-height:1.9}.install-area[hidden],.install-help[hidden]{display:none}
+</style><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" type="image/png" href="./icons/icon-192.png"><link rel="apple-touch-icon" href="./icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="모모"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head><body><main>
+<header><p class="eyebrow">A TINY FRIEND, A LITTLE EVERY DAY</p><h1>모모의 작은 방</h1><p class="intro">말랑한 숲속 친구, 모모를 돌봐 주세요.</p></header><div class="install-area" id="install-area"><button class="install-button" id="install-app" type="button">홈 화면에 모모 추가</button><p class="install-help" id="install-help" role="status" hidden></p></div>
+<section class="room" aria-label="모모의 방">
+<button class="pet" id="pet" type="button" aria-label="모모 쓰다듬기">
+<svg viewBox="0 0 260 280" aria-hidden="true">
+<defs><radialGradient id="fur" cx="40%" cy="30%" r="75%"><stop stop-color="#fff3cf"/><stop offset=".65" stop-color="#e3d3a0"/><stop offset="1" stop-color="#cabb88"/></radialGradient><radialGradient id="blush"><stop stop-color="#e6a999" stop-opacity=".7"/><stop offset="1" stop-color="#e6a999" stop-opacity="0"/></radialGradient></defs>
+<ellipse cx="131" cy="247" rx="73" ry="12" fill="#7d8869" opacity=".12"/>
+<g class="body"><g stroke="#8e8b65" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+<path id="momo-ears" d="M75 124 Q39 71 63 56 Q85 45 98 103 M166 103 Q182 47 204 58 Q226 72 188 125" fill="url(#fur)"/>
+<path id="momo-inner-ears" d="M72 107 Q55 76 65 69 Q78 62 88 103 M177 103 Q189 64 201 70 Q209 78 192 109" fill="#dfb9a2" stroke="none"/>
+<path id="momo-body" d="M53 175 Q53 105 98 100 Q114 90 130 98 Q147 90 163 101 Q209 108 209 176 Q220 230 185 242 Q151 255 130 246 Q106 255 76 243 Q43 232 53 175Z" fill="url(#fur)"/>
+<ellipse cx="80" cy="242" rx="20" ry="9" fill="#d2c28e"/><ellipse cx="182" cy="242" rx="20" ry="9" fill="#d2c28e"/>
+<path d="M62 190 Q47 184 49 205 Q51 219 68 213 M200 190 Q217 184 213 204 Q211 219 196 213" fill="#e6d6a5"/>
+</g>
+<ellipse cx="130" cy="212" rx="45" ry="24" fill="#fff0cd" opacity=".7"/>
+<ellipse cx="83" cy="172" rx="19" ry="12" fill="url(#blush)"/><ellipse cx="177" cy="172" rx="19" ry="12" fill="url(#blush)"/>
+<g id="eyes" fill="#655b45"><ellipse cx="97" cy="151" rx="6" ry="8"/><ellipse cx="163" cy="151" rx="6" ry="8"/><circle cx="95" cy="148" r="2" fill="#fff8df"/><circle cx="161" cy="148" r="2" fill="#fff8df"/></g>
+<path d="M125 169 Q130 164 135 169 Q134 176 130 176 Q126 175 125 169" fill="#b68a71"/>
+<path id="mouth" d="M116 183 Q130 196 144 183" fill="none" stroke="#8d7058" stroke-width="2.8" stroke-linecap="round"/>
+<path id="momo-sprout" d="M125 97 Q105 76 122 66 Q141 76 130 98 Q144 72 161 80 Q162 99 131 103" fill="#8ea574" stroke="#718b5e" stroke-width="2"/>
+<g id="growth-details"></g></g></svg><span class="heart" aria-hidden="true">♥</span><span class="food-fx" aria-hidden="true">🍓</span></button></section>
+<section class="growth" aria-label="모모의 성장"><div class="growth-title"><strong id="stage-name">1단계 · 아기 모모</strong><span id="care-total">돌봄 0점</span></div><div class="track" id="growth-meter" role="progressbar" aria-label="다음 단계까지의 성장" aria-valuemin="0" aria-valuemax="100"><div class="fill" id="growth-fill"></div></div><p id="growth-next">다음 단계까지 6점</p></section>
+<p class="message" id="message" role="status" aria-live="polite">안녕! 나는 모모야. 만나서 반가워!</p>
+<section class="stats" aria-label="모모의 현재 상태">
+<div><div class="stat-head"><span>배고픔</span><output id="hunger-text"></output></div><div class="track" id="hunger-meter" role="progressbar" aria-label="배고픔" aria-valuemin="0" aria-valuemax="100"><div class="fill" id="hunger-fill"></div></div><p class="hint">높을수록 배가 고파요.</p></div>
+<div><div class="stat-head"><span>기분</span><output id="mood-text"></output></div><div class="track" id="mood-meter" role="progressbar" aria-label="기분" aria-valuemin="0" aria-valuemax="100"><div class="fill" id="mood-fill"></div></div><p class="hint">높을수록 기분이 좋아요.</p></div>
+</section>
+<div class="actions"><button id="feed" type="button">🍓 먹이 주기</button><button id="stroke" type="button">♡ 쓰다듬기</button></div>
+<p class="footnote">시간이 지나면 배가 고파지고, 기분도 조금씩 달라져요.<br>모모를 직접 눌러 쓰다듬을 수도 있어요. 먹이는 +2점, 쓰다듬기는 +1점. 돌본 만큼만 자라요.<br>상태와 성장 단계는 이 브라우저에 저장됩니다.</p><p id="save-status" role="status"></p>
+</main><script>
+const key='little-creature-momo-v1';
+let state={hunger:35,mood:75,care:0,stage:0,updated:Date.now()};
+const clamp=value=>Math.max(0,Math.min(100,value));
+try{const saved=JSON.parse(localStorage.getItem(key)||'null');if(saved&&['hunger','mood','updated'].every(name=>Number.isFinite(saved[name]))){state={hunger:clamp(saved.hunger),mood:clamp(saved.mood),updated:saved.updated,care:Number.isFinite(saved.care)?Math.max(0,Math.floor(saved.care)):0,stage:0};}}catch{}
+const stages=[
+ {name:'아기 모모',threshold:0,ears:'M75 124 Q39 71 63 56 Q85 45 98 103 M166 103 Q182 47 204 58 Q226 72 188 125',inner:'M72 107 Q55 76 65 69 Q78 62 88 103 M177 103 Q189 64 201 70 Q209 78 192 109',body:'M53 175 Q53 105 98 100 Q114 90 130 98 Q147 90 163 101 Q209 108 209 176 Q220 230 185 242 Q151 255 130 246 Q106 255 76 243 Q43 232 53 175Z',sprout:'M125 97 Q105 76 122 66 Q141 76 130 98 Q144 72 161 80 Q162 99 131 103',details:''},
+ {name:'새싹 모모',threshold:6,ears:'M73 123 Q34 55 60 45 Q84 37 99 104 M165 104 Q180 34 204 46 Q230 59 189 126',inner:'M72 104 Q51 64 62 58 Q76 52 88 101 M177 101 Q190 51 202 59 Q211 68 192 107',body:'M49 174 Q48 107 95 99 Q115 86 130 96 Q149 86 166 99 Q213 104 213 177 Q226 235 184 245 Q153 257 130 247 Q106 256 74 245 Q34 233 49 174Z',sprout:'M126 96 Q98 70 113 57 Q138 65 130 97 Q144 61 165 69 Q169 93 131 103',details:'<path d="M112 215 Q130 225 148 215" fill="none" stroke="#c7b784" stroke-width="3" stroke-linecap="round"/><path d="M129 210 Q117 201 120 196 Q130 198 129 210 Q133 196 143 200 Q142 209 129 212" fill="#a4b787"/>'},
+ {name:'씩씩한 모모',threshold:16,ears:'M72 124 Q28 40 56 33 Q82 25 100 103 M165 102 Q184 23 210 35 Q238 49 190 126',inner:'M71 105 Q46 53 58 46 Q74 41 89 102 M177 102 Q194 38 207 48 Q217 59 193 109',body:'M46 174 Q42 104 94 96 Q114 83 130 94 Q149 82 168 97 Q220 104 217 178 Q231 235 185 247 Q153 258 130 248 Q103 259 72 247 Q29 233 46 174Z',sprout:'M126 94 Q93 66 109 49 Q138 57 130 96 Q146 49 170 59 Q177 88 131 103',details:'<path d="M61 202 Q130 227 201 202 L199 217 Q130 239 63 217Z" fill="#9db38a"/><path d="M169 221 L180 241 L192 222" fill="#8fa77a"/><path d="M129 209 Q115 197 120 190 Q132 196 129 209 Q135 189 147 195 Q145 208 129 213" fill="#b6c59a"/><g fill="#b5c49a"><ellipse cx="68" cy="181" rx="4" ry="6"/><ellipse cx="191" cy="181" rx="4" ry="6"/></g>'},
+ {name:'다 자란 모모',threshold:32,ears:'M72 124 Q22 32 54 24 Q84 16 101 101 M164 102 Q184 14 213 26 Q246 40 191 126',inner:'M70 102 Q41 45 56 38 Q73 32 89 101 M177 101 Q196 28 211 40 Q223 52 194 109',body:'M43 174 Q38 101 91 94 Q113 80 130 92 Q151 79 170 95 Q224 101 221 178 Q235 238 185 249 Q153 261 130 250 Q101 260 70 249 Q23 234 43 174Z',sprout:'M126 94 Q88 63 106 43 Q139 50 130 96 Q148 42 175 53 Q182 86 131 104',details:'<path d="M59 199 Q130 230 204 199 L201 216 Q130 244 61 216Z" fill="#8ea97b"/><path d="M169 219 L182 244 L197 221" fill="#819d6b"/><g stroke="#92a87a" stroke-width="2" fill="#b4c695"><path d="M124 206 Q103 183 113 176 Q133 184 130 207 Q137 179 150 184 Q156 200 131 212"/></g><g transform="translate(131 65)"><g fill="#fff0c2" stroke="#d6bb7f" stroke-width="1"><ellipse cy="-8" rx="5" ry="8"/><ellipse cy="8" rx="5" ry="8"/><ellipse cx="-8" rx="8" ry="5"/><ellipse cx="8" rx="8" ry="5"/></g><circle r="5" fill="#dfb467"/></g><g fill="#a6bb8b"><ellipse cx="63" cy="179" rx="4" ry="6"/><ellipse cx="196" cy="179" rx="4" ry="6"/></g>'}
+];
+function stageFor(care){let index=0;for(let i=1;i<stages.length;i++)if(care>=stages[i].threshold)index=i;return index;}
+state.stage=stageFor(state.care);
+let drawnStage=-1;
+function renderGrowth(){
+ const index=stageFor(state.care);state.stage=index;
+ if(drawnStage!==index){
+  const art=stages[index];
+  document.getElementById('momo-ears').setAttribute('d',art.ears);
+  document.getElementById('momo-inner-ears').setAttribute('d',art.inner);
+  document.getElementById('momo-body').setAttribute('d',art.body);
+  document.getElementById('momo-sprout').setAttribute('d',art.sprout);
+  document.getElementById('growth-details').innerHTML=art.details;drawnStage=index;
+ }
+ document.getElementById('stage-name').textContent=(index+1)+'단계 · '+stages[index].name;
+ document.getElementById('care-total').textContent='돌봄 '+state.care+'점';
+ const next=stages[index+1];
+ const progress=next?Math.min(100,(state.care-stages[index].threshold)/(next.threshold-stages[index].threshold)*100):100;
+ document.getElementById('growth-fill').style.width=progress+'%';
+ const meter=document.getElementById('growth-meter');meter.setAttribute('aria-valuenow',Math.round(progress));meter.setAttribute('aria-valuetext',next?'다음 단계까지 '+(next.threshold-state.care)+'점':'모든 성장 단계를 마쳤어요');
+ document.getElementById('growth-next').textContent=next?'다음 단계: '+next.name+' · '+(next.threshold-state.care)+'점 남았어요':'모모가 다 자랐어요. 함께한 돌봄은 계속 쌓여요.';
+}
+function careFor(points){const before=state.stage;state.care+=points;state.stage=stageFor(state.care);return state.stage>before;}
+let reactionUntil=0,reactionTimer;
+const pet=document.getElementById('pet');
+const message=document.getElementById('message');
+function advance(now=Date.now()){
+ const minutes=Math.max(0,Math.min((now-state.updated)/60000,480));
+ state.hunger=clamp(state.hunger+minutes*3);
+ state.mood=clamp(state.mood-minutes*(state.hunger>75?3:1.5));
+ state.updated=now;
+}
+function save(){try{localStorage.setItem(key,JSON.stringify(state));document.getElementById('save-status').textContent='';}catch{document.getElementById('save-status').textContent='이 브라우저에서는 상태를 저장하지 못했어요.';}}
+function render(){
+ renderGrowth();
+ const hungry=Math.round(state.hunger),mood=Math.round(state.mood);
+ const hungerLabel=hungry>=75?'배가 고파요':hungry>=45?'조금 출출해요':'배가 든든해요';
+ const moodLabel=mood>=70?'행복해요':mood>=35?'그저 그래요':'관심이 필요해요';
+ document.getElementById('hunger-text').textContent=hungerLabel+' · '+hungry+'/100';
+ document.getElementById('mood-text').textContent=moodLabel+' · '+mood+'/100';
+ for(const [name,value,label,color] of [['hunger',hungry,hungerLabel,hungry>=75?'#d79b78':'#c5b47b'],['mood',mood,moodLabel,mood>=70?'#8eaa76':'#b7b48b']]){
+  document.getElementById(name+'-fill').style.width=value+'%';document.getElementById(name+'-fill').style.background=color;
+  const meter=document.getElementById(name+'-meter');meter.setAttribute('aria-valuenow',value);meter.setAttribute('aria-valuetext',label+' '+value+'점');
+ }
+ const reacting=Date.now()<reactionUntil;
+ const happy=reacting||mood>=70;
+ document.getElementById('eyes').innerHTML=happy?'<g fill="none" stroke="#655b45" stroke-width="3" stroke-linecap="round"><path d="M90 153 Q97 142 104 153 M156 153 Q163 142 170 153"/></g>':'<ellipse cx="97" cy="153" rx="5" ry="'+(mood<35?4:7)+'"/><ellipse cx="163" cy="153" rx="5" ry="'+(mood<35?4:7)+'"/>';
+ document.getElementById('mouth').setAttribute('d',happy?'M116 183 Q130 196 144 183':mood<35?'M120 190 Q130 182 140 190':'M122 187 Q130 190 138 187');
+ if(!reacting){const text=hungry>=75?'배가 꼬르륵… 먹이를 조금 줄래?':mood<35?'조금 심심해. 나를 쓰다듬어 줄래?':mood>=70?'너랑 함께 있으니 기분이 좋아!':'오늘도 여기서 느긋하게 쉬고 있어.';if(message.textContent!==text)message.textContent=text;}
+}
+function react(type,text){
+ clearTimeout(reactionTimer);pet.classList.remove('loved','eating');void pet.offsetWidth;pet.classList.add(type);
+ reactionUntil=Date.now()+2400;message.textContent=text;render();
+ reactionTimer=setTimeout(()=>{pet.classList.remove('loved','eating');render();},2450);
+}
+function feed(){advance();if(state.hunger<=3){save();react('loved','배가 아주 든든해! 조금 있다가 또 먹자.');return;}
+ state.hunger=clamp(state.hunger-25);state.mood=clamp(state.mood+8);const grew=careFor(2);save();react('eating',grew?'쑥! '+stages[state.stage].name+'로 자랐어. 돌봐 줘서 고마워!':'냠냠! 맛있어. 돌봄 +2점!');}
+function stroke(){advance();state.mood=clamp(state.mood+15);const grew=careFor(1);save();react('loved',grew?'쑥! '+stages[state.stage].name+'로 자랐어. 돌봐 줘서 고마워!':'쓰담쓰담, 고마워! 돌봄 +1점!');}
+document.getElementById('feed').addEventListener('click',feed);
+document.getElementById('stroke').addEventListener('click',stroke);
+pet.addEventListener('click',stroke);
+function tick(){advance();render();save();}
+setInterval(tick,5000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)tick();else save();});
+window.addEventListener('pagehide',save);
+tick();
+let installPrompt;
+const installArea=document.getElementById('install-area');
+const installed=matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches||navigator.standalone;
+installArea.hidden=!!installed;
+window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPrompt=event;});
+window.addEventListener('appinstalled',()=>{installPrompt=null;installArea.hidden=true;});
+document.getElementById('install-app').addEventListener('click',async()=>{
+ if(installPrompt){const prompt=installPrompt;installPrompt=null;await prompt.prompt();return;}
+ const help=document.getElementById('install-help');help.hidden=!help.hidden;
+ help.textContent=/iPhone|iPad|iPod/.test(navigator.userAgent)?'Safari에서 이 페이지를 열고, 공유 → 홈 화면에 추가 → 웹 앱으로 열기를 켠 뒤 추가해 주세요.':'Chrome에서 이 페이지를 열고, 오른쪽 위 ⋮ 메뉴 → 홈 화면에 추가 또는 앱 설치를 선택해 주세요.';
+});
+if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')){
+ navigator.serviceWorker.register('./sw.js').catch(()=>{});
+}
+</script></body></html>

@@ -44,7 +44,7 @@ window.projects = [
     "title": "모모의 작은 방",
     "description": "먹이를 주고 쓰다듬으며 작은 생물 모모를 키워요.",
     "category": "놀이",
-    "url": "https://momo-little-room-pet.mellowdace42.chatgpt.site",
+    "url": "apps/momo/",
     "mark": "♡",
     "tone": "peach"
   },
