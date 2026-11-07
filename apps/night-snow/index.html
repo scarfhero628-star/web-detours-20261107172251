@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#dceef8">
+  <title>벚꽃이 내리는 봄</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; }
+    body { background: #dceef8; background-image: radial-gradient(ellipse at 50% 20%, #f2faff, #dceef8 75%); }
+    canvas { display: block; width: 100%; height: 100%; }
+  </style>
+</head>
+<body>
+  <canvas aria-label="연한 하늘색 배경에 분홍 벚꽃잎이 천천히 내려와 쌓이는 풍경" role="img"></canvas>
+  <script>
+    const canvas = document.querySelector('canvas');
+    const context = canvas.getContext('2d');
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+        let width, height, flakes = [], previousTime;
+    const bank = new Float64Array(180);
+    function surface(x) {
+      const position = Math.max(0, Math.min(bank.length - 1, x / width * (bank.length - 1)));
+      const left = Math.floor(position);
+      const right = Math.min(left + 1, bank.length - 1);
+      return bank[left] + (bank[right] - bank[left]) * (position - left);
+    }
+    function settle(flake) {
+      const center = Math.round(Math.max(0, Math.min(1, flake.x / width)) * (bank.length - 1));
+      for (let offset = -5; offset <= 5; offset++) {
+        const index = center + offset;
+        if (index >= 0 && index < bank.length) {
+          const amount = 2.8 * (flake.radius / 2) * Math.exp(-offset * offset / 8);
+          bank[index] += amount * Math.max(0, 1 - bank[index] / (height * .65));
+        }
+      }
+    }
+    function drawBank() {
+      context.beginPath();
+      context.moveTo(0, height);
+      for (let i = 0; i < bank.length; i++) {
+        context.lineTo(i / (bank.length - 1) * width, height - bank[i]);
+      }
+      context.lineTo(width, height);
+      context.closePath();
+      const snow = context.createLinearGradient(0, height - Math.max(1, ...bank), 0, height);
+      snow.addColorStop(0, '#fbd4e3');
+      snow.addColorStop(1, '#eab0c8');
+      context.fillStyle = snow;
+      context.fill();
+      // A crisp white edge makes even the first small deposits visible.
+      context.beginPath();
+      for (let i = 0; i < bank.length; i++) {
+        const x = i / (bank.length - 1) * width;
+        const y = height - bank[i];
+        if (i === 0) context.moveTo(x, y); else context.lineTo(x, y);
+      }
+      context.strokeStyle = '#ffe8f0';
+      context.lineWidth = 1.5;
+      context.stroke();
+    }
+    function makeFlake(anywhere = false) {
+      const depth = Math.random();
+      return {
+        x: Math.random() * width,
+        y: anywhere ? Math.random() * height : -10 - Math.random() * 40,
+        radius: 1 + depth * 2.2,
+        speed: 12 + depth * 20,
+        opacity: .3 + depth * .6,
+        phase: Math.random() * Math.PI * 2,
+        sway: 3 + Math.random() * 7
+      };
+    }
+    function resize() {
+      width = innerWidth;
+      height = innerHeight;
+      const ratio = Math.min(devicePixelRatio || 1, 2);
+      canvas.width = Math.round(width * ratio);
+      canvas.height = Math.round(height * ratio);
+      context.setTransform(ratio, 0, 0, ratio, 0, 0);
+      flakes = Array.from({ length: Math.min(170, Math.max(45, Math.round(width * height / 11000))) }, () => makeFlake(true));
+    }
+    function draw(time) {
+      const elapsed = previousTime === undefined ? 0 : Math.min((time - previousTime) / 1000, .05);
+      previousTime = time;
+      context.clearRect(0, 0, width, height);
+      for (let i = 0; i < flakes.length; i++) {
+        let flake = flakes[i];
+        if (!reducedMotion.matches) {
+          flake.y += flake.speed * elapsed;
+          flake.phase += elapsed * .35;
+          flake.x += Math.sin(flake.phase) * flake.sway * elapsed;
+          if (flake.x < -10) flake.x = width + 10;
+          if (flake.x > width + 10) flake.x = -10;
+                    if (flake.y + flake.radius >= height - surface(flake.x)) {
+            settle(flake);
+            flake = flakes[i] = makeFlake();
+          }
+        }
+        context.save();
+        context.translate(flake.x, flake.y);
+        context.rotate(flake.phase);
+        const size = flake.radius * 2.3;
+        context.scale(size, size);
+        context.beginPath();
+        context.moveTo(0, 1);
+        context.bezierCurveTo(-1.25, .25, -1, -.9, -.3, -1);
+        context.quadraticCurveTo(-.1, -.95, 0, -.65);
+        context.quadraticCurveTo(.1, -.95, .3, -1);
+        context.bezierCurveTo(1, -.9, 1.25, .25, 0, 1);
+        context.closePath();
+        context.fillStyle = `rgba(241,157,190,${Math.min(1, flake.opacity + .15)})`;
+        context.fill();
+        context.strokeStyle = 'rgba(255,230,240,.7)';
+        context.lineWidth = .12;
+        context.stroke();
+        context.restore();
+      }
+      drawBank();
+      requestAnimationFrame(draw);
+    }
+    addEventListener('resize', resize);
+    document.addEventListener('visibilitychange', () => { previousTime = undefined; });
+    resize();
+    requestAnimationFrame(draw);
+  </script>
+</body>
+</html>

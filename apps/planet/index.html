@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#d4c8e1">
+  <title>느긋한 행성</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 100%; height: 100%; }
+    body { overflow: hidden; background: #d4c8e1; color: #79658e; }
+    main { min-height: 100%; min-height: 100svh; display: grid; place-items: center; position: relative; isolation: isolate; }
+    main::before { content: ''; position: absolute; inset: 0; z-index: -1; background: radial-gradient(ellipse at 50% 45%, #eee7f3 0%, #d9cde5 46%, #c5b4d5 100%); }
+    .sparkles { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: -1; }
+    .sparkles i { position: absolute; left: var(--x); top: var(--y); width: calc(var(--s, 17px) * 1.25); height: calc(var(--s, 17px) * 1.25); animation: drift var(--d, 12s) ease-in-out infinite alternate; animation-delay: var(--delay, 0s); }
+    .sparkles i::before { content: ''; position: absolute; inset: 0; background: #fffdf4; clip-path: polygon(50% 0, 61% 37%, 100% 50%, 61% 63%, 50% 100%, 39% 63%, 0 50%, 39% 37%); animation: twinkle var(--t, 4s) ease-in-out infinite; animation-delay: var(--delay, 0s); }
+    .sparkles i::after { content: ''; position: absolute; inset: -9px; border-radius: 50%; background: radial-gradient(circle, #fff6dcc0, #fff6dc00 68%); animation: twinkle var(--t, 4s) ease-in-out infinite; animation-delay: var(--delay, 0s); }
+    @keyframes drift { from { transform: translate(-9px, 15px) rotate(-8deg); } to { transform: translate(12px, -20px) rotate(12deg); } }
+    @keyframes twinkle { 0%, 100% { opacity: .25; transform: scale(.55); } 50% { opacity: 1; transform: scale(1.3); } }
+    .sandwich { width: min(61vw, 330px); height: auto; overflow: visible; transform: rotate(-12deg); filter: drop-shadow(0 15px 18px #735d3520); }
+    .note { position: absolute; bottom: max(34px, env(safe-area-inset-bottom)); margin: 0; font: 12px/1.6 Georgia, 'Times New Roman', serif; letter-spacing: .22em; opacity: .65; }
+    @keyframes turn { from { transform: rotate(-12deg); } to { transform: rotate(348deg); } }
+    @media (prefers-reduced-motion: reduce) { .sandwich { animation: none; transform: rotate(-12deg); } .sparkles i, .sparkles i::before, .sparkles i::after { animation: none; } }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="sparkles" aria-hidden="true">
+      <i style="--x:18%;--y:23%;--s:21px;--delay:-2s;--d:13s"></i>
+      <i style="--x:37%;--y:15%;--s:12px;--delay:-.8s;--t:5s"></i>
+      <i style="--x:69%;--y:20%;--s:23px;--delay:-3.1s;--d:15s"></i>
+      <i style="--x:83%;--y:43%;--s:15px;--delay:-1.4s;--t:4.7s"></i>
+      <i style="--x:75%;--y:73%;--s:22px;--delay:-.4s;--d:14s"></i>
+      <i style="--x:49%;--y:82%;--s:13px;--delay:-2.9s;--t:5.3s"></i>
+      <i style="--x:23%;--y:72%;--s:20px;--delay:-1.9s;--d:16s"></i>
+      <i style="--x:12%;--y:49%;--s:12px;--delay:-3.5s;--t:4.6s"></i>
+      <i style="--x:61%;--y:65%;--s:11px;--delay:-1s;--d:11s"></i>
+      <i style="--x:34%;--y:37%;--s:14px;--delay:-2.5s;--t:5.6s"></i>
+    </div>
+    <svg class="sandwich" viewBox="0 0 400 360" role="img" aria-labelledby="planet-title">
+      <title id="planet-title">천천히 빙글빙글 도는 고리가 있는 행성</title>
+      <defs>
+        <radialGradient id="planet-body" cx="32%" cy="25%" r="80%">
+          <stop stop-color="#fff0cb"/><stop offset=".42" stop-color="#e9b98d"/><stop offset=".78" stop-color="#c88589"/><stop offset="1" stop-color="#95688b"/>
+        </radialGradient>
+        <linearGradient id="planet-ring" x1="0" y1="0" x2="1" y2="1">
+          <stop stop-color="#f8e6be"/><stop offset=".5" stop-color="#e6bba9"/><stop offset="1" stop-color="#b18aa7"/>
+        </linearGradient>
+        <clipPath id="planet-clip"><circle cx="200" cy="180" r="92"/></clipPath>
+      </defs>
+      <g transform="rotate(-24 200 180)">
+        <ellipse cx="200" cy="180" rx="165" ry="48" fill="none" stroke="#b28aa9" stroke-width="25"/>
+        <ellipse cx="200" cy="180" rx="165" ry="48" fill="none" stroke="#f8e9cf" stroke-width="2" opacity=".65"/>
+        <circle cx="200" cy="180" r="92" fill="url(#planet-body)"/>
+        <g clip-path="url(#planet-clip)" fill="none" stroke-linecap="round">
+          <path d="M103 135 Q185 160 294 130" stroke="#ffedc8" stroke-width="16" opacity=".35"/>
+          <path d="M103 164 Q196 191 295 161" stroke="#d9958f" stroke-width="10" opacity=".4"/>
+          <path d="M102 204 Q192 232 294 200" stroke="#ffe3bd" stroke-width="20" opacity=".27"/>
+          <path d="M118 241 Q201 260 282 234" stroke="#b7798c" stroke-width="12" opacity=".3"/>
+          <path d="M141 116 Q160 104 181 103" stroke="#fff8df" stroke-width="5" opacity=".6"/>
+        </g>
+        <path d="M35 180 A165 48 0 0 0 365 180" fill="none" stroke="url(#planet-ring)" stroke-width="25"/>
+        <path d="M35 180 A165 48 0 0 0 365 180" fill="none" stroke="#fff1d5" stroke-width="2" opacity=".75"/>
+      </g>
+    </svg>
+    <p class="note" aria-hidden="true">take your time.</p>
+  </main>
+  <script>
+    const sandwich = document.querySelector('.sandwich');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let hovering = false;
+    let clicked = false;
+    let bounceStarted;
+    let angle = -12;
+    let speed = 360 / 48;
+    let lastTime;
+    sandwich.addEventListener('pointerenter', () => { hovering = true; clicked = false; });
+    sandwich.addEventListener('pointerleave', () => { hovering = false; clicked = false; });
+    sandwich.addEventListener('click', () => { clicked = true; bounceStarted = performance.now(); });
+    window.addEventListener('blur', () => { hovering = false; });
+    function rotate(time) {
+      const elapsed = lastTime === undefined ? 0 : Math.min((time - lastTime) / 1000, 0.1);
+      lastTime = time;
+      const targetSpeed = hovering && !clicked ? 360 / 34 : 360 / 48;
+      speed += (targetSpeed - speed) * (1 - Math.exp(-elapsed * 3));
+      if (!reducedMotion.matches) {
+        angle = (angle + speed * elapsed) % 360;
+                const progress = bounceStarted === undefined ? 1 : Math.min((time - bounceStarted) / 650, 1);
+        const bounce = Math.max(0, Math.sin(progress * Math.PI * 2)) * Math.pow(1 - progress, 1.2);
+        const settle = Math.sin(progress * Math.PI) * 0.045;
+        sandwich.style.transform = `translateY(${-bounce * 17}px) rotate(${angle}deg) scale(${1 + settle})`;
+      }
+      requestAnimationFrame(rotate);
+    }
+    requestAnimationFrame(rotate);
+  </script>
+</body>
+</html>

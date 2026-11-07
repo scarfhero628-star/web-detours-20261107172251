@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#faf2e5">
+<title>라면 기다리는 3분</title>
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; background: #faf2e5; color: #593e2c; font-family: 'Malgun Gothic', system-ui, sans-serif; }
+main { min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 28px 20px; }
+.bread { width: min(58vw, 240px); height: auto; margin-bottom: 8px; overflow: visible; }
+#bake-stage { margin: 0 0 20px; color: #785338; font-size: 15px; }
+h1 { font-size: 25px; font-weight: 600; margin: 0 0 28px; }
+.settings { display: flex; gap: 18px; justify-content: center; }
+label { display: flex; align-items: center; gap: 8px; font-size: 15px; }
+input { width: 88px; padding: 12px 8px; border: 1px solid #d9c6ad; border-radius: 12px; background: #fffaf2; color: inherit; font: 22px system-ui, sans-serif; text-align: center; }
+output { display: block; font-size: clamp(56px, 15vw, 96px); font-weight: 600; letter-spacing: -.04em; font-variant-numeric: tabular-nums; margin: 26px 0 8px; }
+#status { min-height: 26px; margin: 0 0 26px; color: #8b6f57; font-size: 15px; }
+.actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+button { border: 0; border-radius: 999px; padding: 15px 25px; font: 600 16px 'Malgun Gothic', system-ui, sans-serif; background: #aa663a; color: #fffaf2; cursor: pointer; }
+button.secondary { color: #78583e; background: #ecdfca; }
+button:disabled { opacity: .45; cursor: default; }
+button:active:not(:disabled) { transform: scale(.97); }
+button:focus-visible, input:focus-visible { outline: 3px solid #cd9967; outline-offset: 4px; }
+body.done { background: #f8e4bb; }
+body.done output { color: #a35426; }
+.note { max-width: 340px; color: #a28c74; font-size: 12px; line-height: 1.7; margin: 28px 0 0; }
+</style>
+</head>
+<body>
+<main>
+<svg class="bread" viewBox="0 0 280 180" role="img" aria-label="남은 시간에 따라 익어가는 라면">
+  <defs><linearGradient id="loaf-color" x1="0" y1="0" x2="0" y2="1"><stop id="loaf-top" stop-color="#f6d387"/><stop id="loaf-bottom" offset="1" stop-color="#df9a51"/></linearGradient></defs>
+  <ellipse cx="140" cy="161" rx="93" ry="9" fill="#795338" opacity=".12"/>
+  <g id="steam" fill="none" stroke="#c5a991" stroke-width="4" stroke-linecap="round" opacity=".6"><path d="M99 50 Q87 37 100 23 Q110 13 101 4"/><path d="M141 45 Q129 32 142 18"/><path d="M182 50 Q170 37 183 23 Q193 13 184 4"/></g>
+  <path d="M36 88 Q47 158 140 159 Q233 158 244 88Z" fill="#d7654e" stroke="#af4e3f" stroke-width="3"/>
+  <path d="M63 130 Q140 156 217 130" fill="none" stroke="#f8ddd0" stroke-width="6"/>
+  <ellipse cx="140" cy="87" rx="105" ry="36" fill="url(#loaf-color)" stroke="#fff0d9" stroke-width="7"/>
+  <g id="loaf-cuts" fill="none" stroke="#f9e7ad" stroke-width="6" stroke-linecap="round"><path d="M72 78 Q85 64 98 78 T124 78 T150 78 T176 78 T202 78"/><path d="M68 92 Q81 78 94 92 T120 92 T146 92 T172 92 T198 92"/><path d="M85 104 Q98 90 111 104 T137 104 T163 104 T189 104"/></g>
+  <g fill="#73945e"><ellipse cx="94" cy="64" rx="7" ry="4" transform="rotate(-25 94 64)"/><ellipse cx="186" cy="99" rx="7" ry="4" transform="rotate(25 186 99)"/><ellipse cx="155" cy="65" rx="6" ry="3"/></g>
+</svg>
+<p id="bake-stage" role="status" aria-live="polite"> 뜨거운 물을 붓고, 이제 시작 </p>
+<h1>라면 기다리는 3분</h1>
+<div class="settings">
+  <label><input id="minutes" type="number" min="0" max="999" step="1" value="3" inputmode="numeric">분</label>
+  <label><input id="seconds" type="number" min="0" max="59" step="1" value="0" inputmode="numeric">초</label>
+</div>
+<output id="remaining" aria-label="남은 시간">03:00</output>
+<p id="status" role="status" aria-live="polite">시간을 정하고 시작해 주세요.</p>
+<div class="actions">
+  <button id="start">시작</button>
+  <button id="pause" class="secondary" disabled>일시정지</button>
+  <button id="reset" class="secondary">초기화</button>
+</div>
+<p class="note">완료되면 화면과 알림음으로 알려 드려요.<br>소리를 켜고 이 페이지를 열어 두세요.</p>
+</main>
+<script>
+const minutes = document.getElementById('minutes');
+const seconds = document.getElementById('seconds');
+const display = document.getElementById('remaining');
+const status = document.getElementById('status');
+const start = document.getElementById('start');
+const pause = document.getElementById('pause');
+let remaining = 3 * 60 * 1000;
+let deadline = 0;
+let durationTotal = remaining;
+let running = false;
+let paused = false;
+let audio;
+let alarmNodes = [];
+function stopSound() {
+  alarmNodes.forEach(node => { try { node.stop(); } catch {} });
+  alarmNodes = [];
+}
+function updateBackground() {
+  const progress = durationTotal > 0 ? Math.max(0, Math.min(1, 1 - remaining / durationTotal)) : 0;
+  const dough = [250, 242, 229];
+  const golden = [246, 211, 184];
+  const color = dough.map((channel, index) => Math.round(channel + (golden[index] - channel) * progress));
+  document.body.style.backgroundColor = `rgb(${color.join(',')})`;
+  const mix = (from, to) => `rgb(${from.map((value, index) => Math.round(value + (to[index] - value) * progress)).join(',')})`;
+  document.getElementById('loaf-top').setAttribute('stop-color', mix([246, 211, 135], [235, 139, 66]));
+  document.getElementById('loaf-bottom').setAttribute('stop-color', mix([223, 154, 81], [193, 80, 42]));
+  const noodles = document.getElementById('loaf-cuts');
+  noodles.setAttribute('stroke', mix([249, 231, 173], [255, 222, 128]));
+  noodles.setAttribute('stroke-width', 6 + progress * 2);
+  noodles.setAttribute('transform', `translate(${140 * (1 - (0.88 + progress * .12))} 0) scale(${0.88 + progress * .12} 1)`);
+  document.getElementById('steam').setAttribute('opacity', .25 + progress * .55);
+  const stage = progress >= 1 ? '다 익었어요. 맛있게 드세요!' : progress >= .75 ? '거의 다 익었어요' : progress >= .35 ? '꼬들꼬들, 면이 풀리고 있어요' : '뜨거운 물을 붓고, 이제 시작';
+  const stageElement = document.getElementById('bake-stage');
+  if (stageElement.textContent !== stage) stageElement.textContent = stage;
+}
+function showTime() {
+  updateBackground();
+  const total = Math.max(0, Math.ceil(remaining / 1000));
+  const text = `${String(Math.floor(total / 60)).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`;
+  display.textContent = text;
+  document.title = running ? `${text} · 라면 익는 중` : '라면 기다리는 3분';
+}
+function getDuration() {
+  if (!minutes.checkValidity() || !seconds.checkValidity() || minutes.value === '' || seconds.value === '') return null;
+  return (Number(minutes.value) * 60 + Number(seconds.value)) * 1000;
+}
+function lockInputs(locked) { minutes.disabled = locked; seconds.disabled = locked; }
+function ring() {
+  if (!audio || audio.state !== 'running') return;
+  for (let i = 0; i < 6; i++) {
+    const oscillator = audio.createOscillator();
+    const gain = audio.createGain();
+    const time = audio.currentTime + i * .6;
+    oscillator.type = 'sine';
+    oscillator.frequency.value = i % 2 ? 880 : 660;
+    gain.gain.setValueAtTime(0, time);
+    gain.gain.linearRampToValueAtTime(.18, time + .025);
+    gain.gain.exponentialRampToValueAtTime(.001, time + .4);
+    oscillator.connect(gain);
+    gain.connect(audio.destination);
+    oscillator.start(time);
+    oscillator.stop(time + .45);
+    oscillator.onended = () => { oscillator.disconnect(); gain.disconnect(); };
+    alarmNodes.push(oscillator);
+  }
+}
+function tick() {
+  if (!running) return;
+  remaining = Math.max(0, deadline - Date.now());
+  if (remaining === 0) {
+    running = false;
+    paused = false;
+    lockInputs(false);
+    start.disabled = false;
+    start.textContent = '다시 시작';
+    pause.disabled = true;
+    document.body.classList.add('done');
+    updateBackground();
+    status.textContent = '시간이 다 됐어요! 라면을 확인해 주세요.';
+    ring();
+    document.title = '완료! 라면을 확인해 주세요';
+    display.textContent = '00:00';
+    return;
+  }
+  showTime();
+}
+start.addEventListener('click', () => {
+  if (running) return;
+  if (!paused) {
+    const duration = getDuration();
+    if (duration === null || duration <= 0) {
+      status.textContent = '분은 0~999, 초는 0~59로 입력하고 1초 이상 설정해 주세요.';
+      return;
+    }
+    remaining = duration;
+    durationTotal = duration;
+  }
+  stopSound();
+  try {
+    const Audio = window.AudioContext || window.webkitAudioContext;
+    if (Audio) { audio ||= new Audio(); audio.resume().catch(() => {}); }
+  } catch {}
+  deadline = Date.now() + remaining;
+  running = true;
+  paused = false;
+  document.body.classList.remove('done');
+  lockInputs(true);
+  start.disabled = true;
+  pause.disabled = false;
+  status.textContent = '면이 맛있게 익는 중이에요.';
+  tick();
+});
+pause.addEventListener('click', () => {
+  tick();
+  if (!running) return;
+  running = false;
+  paused = true;
+  start.disabled = false;
+  start.textContent = '이어 시작';
+  pause.disabled = true;
+  status.textContent = '잠시 멈췄어요.';
+  showTime();
+});
+document.getElementById('reset').addEventListener('click', () => {
+  running = false;
+  paused = false;
+  stopSound();
+  lockInputs(false);
+  remaining = getDuration() ?? 0;
+  durationTotal = remaining;
+  start.disabled = false;
+  start.textContent = '시작';
+  pause.disabled = true;
+  document.body.classList.remove('done');
+  status.textContent = '시간을 정하고 시작해 주세요.';
+  showTime();
+});
+[minutes, seconds].forEach(input => input.addEventListener('input', () => {
+  if (!running && !paused) {
+    remaining = getDuration() ?? 0;
+  durationTotal = remaining;
+    document.body.classList.remove('done');
+    stopSound();
+    showTime();
+  }
+}));
+showTime();
+setInterval(tick, 100);
+document.addEventListener('visibilitychange', tick);
+window.addEventListener('focus', tick);
+</script>
+</body>
+</html>

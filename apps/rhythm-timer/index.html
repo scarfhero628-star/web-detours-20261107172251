@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#171d30"><title>한 박자씩</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#171d30;color:#edeaf7;font-family:'Malgun Gothic',system-ui,sans-serif}main{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px;text-align:center}h1{font-size:28px;font-weight:500;margin:0 0 10px}.intro{color:#a6abc1;font-size:14px;margin:0 0 28px}.stats{display:flex;gap:55px;margin-bottom:24px}.stats p{margin:0;font-size:12px;color:#9ca4bd}.stats output{display:block;margin-top:7px;color:#edeaf7;font-size:32px;font-variant-numeric:tabular-nums}button{font-family:inherit;cursor:pointer;border:0}#tap{width:min(65vw,250px);aspect-ratio:1;border-radius:50%;color:#eee9ff;background:#363955;font-size:30px;font-weight:600;border:3px solid #64648c;box-shadow:0 0 0 14px #292e45;touch-action:manipulation;user-select:none;-webkit-user-select:none;transition:background .1s,box-shadow .1s}#tap.beat{background:#655e91;box-shadow:0 0 0 14px #59557d55,0 0 60px #a498ec45}#tap.hit{background:#468878}#tap:disabled{cursor:default;opacity:.6}#feedback{min-height:28px;margin:26px 0 20px;color:#b9b5d3;font-size:15px}.controls{display:flex;gap:12px}.controls button{border-radius:999px;padding:13px 24px;background:#c7b8ec;color:#29263c;font-size:15px;font-weight:600}.controls .secondary{background:#30364b;color:#c8cadd}button:focus-visible{outline:3px solid #efcc94;outline-offset:6px}.note{font-size:12px;line-height:1.8;color:#858ea9;margin-top:25px}@media(prefers-reduced-motion:reduce){#tap{transition:none}}
+body{transition:background .55s ease}
+.combo-wrap{margin:0 0 24px;min-height:110px;display:grid;place-items:center;align-content:center;gap:2px}
+.combo-label{font-size:12px;letter-spacing:.2em;color:#b9b5d3}
+#combo{display:block;font-size:64px;line-height:1.1;font-weight:800;font-variant-numeric:tabular-nums;transition:font-size .3s,color .3s;text-shadow:0 0 28px #ff8b5c33}
+body.broken #combo{color:#b4bad0;text-shadow:none}
+body.broken .combo-label{color:#c6cce0}
+@media(prefers-reduced-motion:reduce){body,#combo{transition:none}}
+#tap{width:min(76vw,300px);border:0;border-radius:30px;background:transparent;box-shadow:none;padding:0;overflow:visible}
+#tap.beat{background:#ffffff08;box-shadow:0 0 35px #c2adff28}
+#tap.hit{background:transparent}
+#tap svg{display:block;width:100%;height:100%;overflow:visible;pointer-events:none}
+#jumper{transform-origin:150px 225px}
+#rope{transform-origin:150px 150px}
+#tap.jumping #jumper{animation:jump .55s cubic-bezier(.3,0,.6,1)}
+#tap.jumping #rope{animation:skip .55s linear}
+#tap.stumble #jumper{animation:stumble .48s ease-out}
+#tap.stumble #rope{transform:translateY(78px) scaleY(.13);stroke:#ed9b89}
+@keyframes jump{0%,100%{transform:translateY(0) scale(1)}15%{transform:translateY(3px) scale(1.03,.96)}48%{transform:translateY(calc(-1 * var(--height,25px))) scale(1.02,1.03)}85%{transform:translateY(2px) scale(1.02,.98)}}
+@keyframes skip{0%{transform:scaleY(1)}25%{transform:scaleY(0)}50%{transform:scaleY(-1)}75%{transform:scaleY(0)}100%{transform:scaleY(1)}}
+@keyframes stumble{0%,100%{transform:rotate(0)}25%{transform:translate(6px,3px) rotate(9deg)}55%{transform:translate(-3px,0) rotate(-5deg)}}
+@media(prefers-reduced-motion:reduce){#tap.jumping #jumper,#tap.jumping #rope,#tap.stumble #jumper{animation:none}}
+#jumper{transform-origin:135px 238px}
+#swing-arm{transform-origin:151px 131px}
+#pickleball{transform:translate(246px,83px)}
+#tap.jumping #jumper{animation:rally-body .55s ease-out}
+#tap.jumping #swing-arm{animation:rally-swing .55s ease-out}
+#tap.jumping #pickleball{animation:rally-ball .55s linear}
+#tap.jumping #ball-trail{animation:rally-trail .55s ease-out}
+#tap.stumble #jumper{animation:rally-miss .48s ease-out}
+#tap.stumble #swing-arm{animation:rally-swing .48s ease-out}
+#tap.stumble #pickleball{animation:missed-ball .6s ease-in forwards}
+@keyframes rally-body{0%,100%{transform:translateX(0) rotate(0)}35%{transform:translateX(-4px) rotate(-4deg)}65%{transform:translate(5px,-3px) rotate(4deg)}}
+@keyframes rally-swing{0%,100%{transform:rotate(0)}25%{transform:rotate(-25deg)}55%{transform:rotate(var(--swing,35deg))}80%{transform:rotate(8deg)}}
+@keyframes rally-ball{0%{transform:translate(277px,52px) scale(.7)}40%{transform:translate(219px,116px) scale(1)}48%{transform:translate(221px,112px) scale(1.2,.8)}100%{transform:translate(281px,var(--shot-y,24px)) scale(.65)}}
+@keyframes rally-trail{0%,45%,100%{opacity:0}55%,80%{opacity:var(--trail,.4)}}
+@keyframes rally-miss{0%,100%{transform:rotate(0)}35%{transform:translateX(7px) rotate(7deg)}65%{transform:translateX(-3px) rotate(-3deg)}}
+@keyframes missed-ball{0%{transform:translate(246px,83px)}100%{transform:translate(265px,255px) scale(.8)}}
+@media(prefers-reduced-motion:reduce){#tap.jumping #jumper,#tap.jumping #swing-arm,#tap.jumping #pickleball,#tap.jumping #ball-trail,#tap.stumble #jumper,#tap.stumble #swing-arm,#tap.stumble #pickleball{animation:none}}
+</style>
+</head>
+<body><main>
+<h1>한 박자씩, 피클볼</h1><p class="intro">빛과 소리에 맞춰 공을 받아쳐 보세요.</p>
+<div class="stats"><p>맞춘 박자<output id="count">0</output></p><p>이어 간 시간<output id="elapsed">00:00</output></p></div>
+<div class="combo-wrap"><span class="combo-label" id="combo-label">COMBO</span><output id="combo" aria-label="연속 성공 횟수">0</output></div>
+<button id="tap" disabled aria-label="박자에 맞춰 피클볼 받아치기">
+<svg viewBox="0 0 300 300" aria-hidden="true">
+<path d="M38 252 L62 178 H238 L262 252Z" fill="#719b901f" stroke="#8cb5aa" stroke-width="2"/>
+<path d="M150 180 V252 M48 218 H252" stroke="#8cb5aa" opacity=".35" fill="none"/>
+<ellipse cx="137" cy="253" rx="58" ry="8" fill="#000" opacity=".18"/>
+<g id="jumper">
+<path d="M117 188 L110 214 L91 238 M151 188 L159 214 L178 238" stroke="#b9c4e6" stroke-width="12" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M84 242 H104 M173 242 H193" stroke="#f2cf9c" stroke-width="10" stroke-linecap="round"/>
+<path d="M112 121 Q133 113 154 125 L160 188 Q136 198 107 186Z" fill="#75b8ad"/>
+<path d="M114 130 L92 155 L77 146" fill="none" stroke="#f3d4b7" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+<g id="swing-arm">
+<path d="M151 131 L173 154 L204 142" fill="none" stroke="#f3d4b7" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+<g transform="rotate(23 208 133)">
+<rect x="202" y="126" width="10" height="32" rx="4" fill="#e8ca9b"/>
+<rect x="189" y="82" width="36" height="49" rx="13" fill="#8274bb" stroke="#d9d1f3" stroke-width="3"/>
+<path d="M197 94 L216 119 M216 94 L197 119" stroke="#bbb0df" stroke-width="2"/>
+</g></g>
+<rect x="125" y="103" width="18" height="21" rx="7" fill="#f3d4b7"/>
+<circle cx="134" cy="86" r="27" fill="#f3d4b7"/>
+<path d="M107 78 Q107 52 134 53 Q159 51 162 78Z" fill="#e9b17a"/>
+<path d="M106 77 H170" stroke="#f8d1a5" stroke-width="7" stroke-linecap="round"/>
+<g fill="#48405c"><circle cx="128" cy="87" r="2.5"/><circle cx="145" cy="87" r="2.5"/></g>
+<path d="M128 99 Q137 105 145 98" fill="none" stroke="#b66e6a" stroke-width="2.5" stroke-linecap="round"/>
+</g>
+<path id="ball-trail" d="M218 112 Q259 74 274 42" stroke="#f6ef9b" stroke-width="4" stroke-linecap="round" fill="none" opacity="0"/>
+<g id="pickleball"><circle r="11" fill="#e5ec75" stroke="#f8ffc7" stroke-width="1.5"/><g fill="#8d9e45"><circle cx="-4" cy="-3" r="1.7"/><circle cx="4" cy="-4" r="1.7"/><circle cy="4" r="1.7"/></g></g>
+</svg>
+</button>
+<p id="feedback" role="status" aria-live="polite">시작하면 1초마다 박자가 와요.</p>
+<div class="controls"><button id="start">시작</button><button id="reset" class="secondary">초기화</button></div>
+<p class="note">60 BPM · 클릭, 터치 또는 스페이스 키<br>박자 앞뒤 0.2초 이내에 누르면 성공해요.</p>
+</main><script>
+const tap = document.getElementById('tap');
+const start = document.getElementById('start');
+const feedback = document.getElementById('feedback');
+const period = 1;
+const tolerance = .2;
+let combo=0, judged=-1;
+let audio, running=false, origin=0, nextBeat=0, count=0, accumulated=0;
+let scored=new Set(), sounded=-1, flashTimer, hitTimer, sources=[];
+function updateHeat(){
+  const heat=Math.min(combo/25,1);
+  const cool=[23,29,48], hot=[134,42,37];
+  document.body.style.backgroundColor=`rgb(${cool.map((v,i)=>Math.round(v+(hot[i]-v)*heat)).join(',')})`;
+  const number=document.getElementById('combo');
+  number.textContent=combo;
+  number.style.fontSize=`${64+Math.min(combo,25)*1.5}px`;
+  number.style.color=combo ? `hsl(${40-heat*15} 100% ${88-heat*15}%)` : '';
+  document.getElementById('combo-label').textContent=combo>=20?'멋져요! KEEP GOING' : combo>=10?'ON FIRE!' : combo>0?'NICE RALLY':'COMBO';
+}
+let actionTimer;
+function animateJumper(missed=false){
+  clearTimeout(actionTimer);
+  tap.classList.remove('jumping','stumble');
+  void tap.offsetWidth;
+  tap.style.setProperty('--swing', (30+Math.min(combo,25))+'deg');
+  tap.style.setProperty('--shot-y', (30-Math.min(combo,25)*1.6)+'px');
+  tap.style.setProperty('--trail', .25+Math.min(combo,25)*.025);
+  tap.style.setProperty('--height', `${22+Math.min(combo,25)*1.8}px`);
+  tap.classList.add(missed?'stumble':'jumping');
+  actionTimer=setTimeout(()=>tap.classList.remove('jumping','stumble'),missed?650:570);
+}
+function breakCombo(){
+  animateJumper(true);
+  if(combo===0)return;
+  combo=0;updateHeat();document.body.classList.add('broken');
+  document.getElementById('combo-label').textContent='다시, 다음 공부터';
+  feedback.textContent='공을 놓쳤어요. 다음 랠리부터 다시!';
+}
+function judgeMisses(now){
+  const lastClosed=Math.floor((now-origin-1-tolerance)/period);
+  while(judged<lastClosed){judged++;if(!scored.has(judged))breakCombo();}
+}
+function clock(){return audio ? audio.currentTime : performance.now()/1000;}
+function stopSounds(){sources.forEach(node=>{try{node.stop();}catch{}});sources=[];}
+function soundAt(time){
+  if(!audio || audio.state!=='running') return;
+  const tone=audio.createOscillator(), gain=audio.createGain();
+  tone.frequency.value=740;
+  gain.gain.setValueAtTime(0,time);
+  gain.gain.linearRampToValueAtTime(.16,time+.005);
+  gain.gain.exponentialRampToValueAtTime(.001,time+.09);
+  tone.connect(gain);gain.connect(audio.destination);
+  tone.start(time);tone.stop(time+.1);sources.push(tone);
+  tone.onended=()=>{tone.disconnect();gain.disconnect();sources=sources.filter(node=>node!==tone);};
+}
+function elapsed(){return accumulated+(running ? Math.max(0,clock()-origin) : 0);}
+function renderTime(){const total=Math.floor(elapsed());document.getElementById('elapsed').textContent=`${String(Math.floor(total/60)).padStart(2,'0')}:${String(total%60).padStart(2,'0')}`;}
+function pause(){
+  if(!running)return;
+  accumulated=elapsed();running=false;stopSounds();
+  clearTimeout(actionTimer);tap.classList.remove('jumping','stumble');
+  tap.disabled=true;tap.classList.remove('beat','hit');
+  start.disabled=false;start.textContent='이어 시작';feedback.textContent='잠시 멈췄어요.';renderTime();
+}
+start.addEventListener('click',async()=>{
+  if(running){pause();return;}
+  start.disabled=true;
+  try{const Audio=window.AudioContext||window.webkitAudioContext;if(Audio){audio ||= new Audio();await audio.resume();}}catch{}
+  origin=clock();nextBeat=0;sounded=-1;judged=-1;scored.clear();running=true;
+  tap.disabled=false;tap.focus();start.disabled=false;start.textContent='일시정지';feedback.textContent='첫 박자를 기다려 주세요.';
+});
+function score(){
+  if(!running)return;
+  judgeMisses(clock());
+  const relative=clock()-origin-1;
+  const nearest=Math.round(relative/period);
+  const error=Math.abs(relative-nearest*period);
+  if(nearest<0 || error>tolerance){feedback.textContent='다음 박자에 맞춰 보세요.';return;}
+  if(scored.has(nearest)){feedback.textContent='한 박자에 한 번씩!';return;}
+  scored.add(nearest);combo++;animateJumper();document.body.classList.remove('broken');updateHeat();
+  if(!matchMedia('(prefers-reduced-motion: reduce)').matches){
+    const number=document.getElementById('combo');
+    number.getAnimations().forEach(animation=>animation.cancel());
+    number.animate([{transform:'scale(1)'},{transform:`scale(${1.08+Math.min(combo,25)*.004})`,offset:.35},{transform:'scale(1)'}],{duration:300,easing:'ease-out'});
+  }
+  count++;document.getElementById('count').textContent=count;
+  feedback.textContent=error<.08?'나이스 샷!':'좋아요, 랠리를 이어가요!';
+  tap.classList.add('hit');clearTimeout(hitTimer);hitTimer=setTimeout(()=>tap.classList.remove('hit'),160);
+}
+tap.addEventListener('click',event=>{if(event.detail===0)score();});
+tap.addEventListener('pointerdown',event=>{if(event.button===0){event.preventDefault();tap.focus();score();}});
+document.addEventListener('keydown',event=>{
+  if(event.code==='Space' && running && (event.target===document.body || event.target===tap)){
+    event.preventDefault();if(!event.repeat)score();
+  }
+});
+document.getElementById('reset').addEventListener('click',()=>{
+  running=false;stopSounds();clearTimeout(flashTimer);clearTimeout(hitTimer);
+  combo=0;judged=-1;updateHeat();document.body.classList.remove('broken');
+  count=0;accumulated=0;scored.clear();document.getElementById('count').textContent='0';renderTime();
+  clearTimeout(actionTimer);tap.classList.remove('jumping','stumble');
+  tap.disabled=true;tap.classList.remove('beat','hit');start.disabled=false;start.textContent='시작';feedback.textContent='시작하면 1초마다 박자가 와요.';
+});
+setInterval(()=>{
+  if(!running)return;
+  const now=clock();
+  judgeMisses(now);
+  // Schedule audio ahead on its own clock; skip old beats after interruptions.
+  if(origin+1+nextBeat*period<now-.1) nextBeat=Math.max(0,Math.ceil((now-origin-1)/period));
+  while(origin+1+nextBeat*period<=now+.12){soundAt(origin+1+nextBeat*period);nextBeat++;}
+  // Keep only recent scoring history during long sessions.
+  const current=Math.floor((now-origin-1)/period);
+  for(const beat of scored)if(beat<current-2)scored.delete(beat);
+  renderTime();
+},25);
+function frame(){
+  if(running){
+    judgeMisses(clock());
+  const relative=clock()-origin-1;
+    const beat=Math.floor(relative/period);
+    if(beat>=0 && beat!==sounded){
+      sounded=beat;tap.classList.add('beat');clearTimeout(flashTimer);
+      flashTimer=setTimeout(()=>tap.classList.remove('beat'),150);
+    }
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+document.addEventListener('visibilitychange',()=>{if(document.hidden && running)pause();});
+</script></body></html>

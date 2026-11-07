@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f4efe5"><title>나만의 작은 캐릭터</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f4efe5;color:#50483f;font-family:'Malgun Gothic',system-ui,sans-serif}main{max-width:1100px;margin:auto;padding:35px 25px}header{margin-bottom:28px}.eyebrow{font-size:11px;letter-spacing:.2em;color:#9b8f7a}h1{margin:10px 0;font-size:30px;font-weight:500;letter-spacing:-.05em}.intro{margin:0;color:#9a8d7c;font-size:14px;line-height:1.8}.studio{display:grid;grid-template-columns:1fr 330px;gap:28px;align-items:start}.preview{position:sticky;top:24px;min-height:560px;border-radius:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 38%,#fffcf5,#e8e4d9);border:1px solid #e3dccc;overflow:hidden}.preview svg{width:min(100%,380px);height:460px;filter:drop-shadow(0 9px 5px #70502a0b)}.caption{font-size:12px;color:#9c917f;letter-spacing:.1em;margin:0 20px 25px;text-align:center}.panel{background:#fffcf6;border:1px solid #e4dccd;padding:22px;border-radius:24px}fieldset{border:0;padding:0;margin:0 0 24px}fieldset:last-of-type{margin-bottom:12px}legend{font-size:15px;font-weight:600;margin-bottom:12px}.options{display:grid;grid-template-columns:1fr 1fr;gap:8px}button{font:14px 'Malgun Gothic',system-ui,sans-serif;cursor:pointer;border:1px solid #e2dccf;border-radius:12px;padding:13px 8px;color:#7b705f;background:#f7f3eb;transition:background .15s,border-color .15s}button[aria-pressed=true]{background:#dfe9db;color:#45664a;border-color:#8aa47e;box-shadow:inset 0 0 0 1px #8aa47e}button:hover{border-color:#9d967f}button:focus-visible{outline:3px solid #c6b293;outline-offset:3px}.tools{display:flex;gap:8px;border-top:1px solid #ebe4d7;padding-top:18px}.tools button{flex:1;background:transparent;font-size:12px}#status{font-size:12px;color:#8b947d;line-height:1.7;margin:14px 0 0;min-height:20px}svg .line{stroke:#72574a;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round}@media(max-width:740px){main{padding:24px 18px}.studio{grid-template-columns:1fr}.preview{position:static;min-height:380px}.preview svg{height:350px}.panel{padding:20px}.options{grid-template-columns:repeat(4,1fr)}button{font-size:12px}h1{font-size:26px}}@media(prefers-reduced-motion:reduce){button{transition:none}}
+.saved-tools{margin-bottom:12px}.saved-tools button{background:#dfe9db;color:#45664a;font-size:14px}.saved-tools button:disabled{opacity:.45;cursor:default}
+.preview canvas{display:block;width:min(100%,350px);height:auto;max-height:560px;object-fit:contain}.preview{min-height:620px}.options button{display:flex;align-items:center;gap:8px;text-align:left;padding:8px;font-size:12px;min-height:64px}.options img{width:45px;height:48px;object-fit:contain}.no-accessory{display:grid;place-items:center;width:45px;height:48px;font-size:25px;color:#b7ac98}.caption{margin-top:8px}@media(max-width:740px){.preview{min-height:450px}.preview canvas{max-height:450px;width:auto;max-width:100%}.options{grid-template-columns:1fr 1fr}}.preview canvas{display:block;width:min(100%,350px);height:auto;max-height:560px;object-fit:contain}.preview{min-height:620px}.options button{display:flex;align-items:center;gap:8px;text-align:left;padding:8px;font-size:12px;min-height:64px}.options img{width:45px;height:48px;object-fit:contain}.no-accessory{display:grid;place-items:center;width:45px;height:48px;font-size:25px;color:#b7ac98}.caption{margin-top:8px}@media(max-width:740px){.preview{min-height:450px}.preview canvas{max-height:450px;width:auto;max-width:100%}.options{grid-template-columns:1fr 1fr}}.preview canvas{display:block;width:min(100%,350px);height:auto;max-height:560px;object-fit:contain}.preview{min-height:620px}.options button{display:flex;align-items:center;gap:8px;text-align:left;padding:8px;font-size:12px;min-height:64px}.options img{width:45px;height:48px;object-fit:contain}.no-accessory{display:grid;place-items:center;width:45px;height:48px;font-size:25px;color:#b7ac98}.caption{margin-top:8px}@media(max-width:740px){.preview{min-height:450px}.preview canvas{max-height:450px;width:auto;max-width:100%}.options{grid-template-columns:1fr 1fr}}.preview canvas{display:block;width:min(100%,350px);height:auto;max-height:560px;object-fit:contain}.preview{min-height:620px}.options button{display:flex;align-items:center;gap:8px;text-align:left;padding:8px;font-size:12px;min-height:64px}.options img{width:45px;height:48px;object-fit:contain}.no-accessory{display:grid;place-items:center;width:45px;height:48px;font-size:25px;color:#b7ac98}.caption{margin-top:8px}@media(max-width:740px){.preview{min-height:450px}.preview canvas{max-height:450px;width:auto;max-width:100%}.options{grid-template-columns:1fr 1fr}}</style></head><body><main>
+<header><p class="eyebrow">LITTLE CHARACTER STUDIO</p><h1>나만의 작은 캐릭터</h1><p class="intro">오늘의 얼굴과 옷을 골라 보세요. 하나씩 더하면, 나다운 모습이 됩니다.</p></header>
+<div class="studio"><section class="preview" aria-label="선택한 캐릭터 미리보기">
+<canvas id="character" width="720" height="1120" role="img" aria-label="나만의 그림 캐릭터"></canvas><p class="caption">A LITTLE MORE LIKE YOU</p></section>
+<section class="panel" aria-label="캐릭터 꾸미기 선택"><div id="categories"></div><div class="tools saved-tools"><button id="save-character" type="button">캐릭터 저장</button><button id="load-character" type="button">불러오기</button></div><div class="tools"><button id="random" type="button">무작위로 꾸미기</button><button id="reset" type="button">처음 모습으로</button></div><p id="status" role="status" aria-live="polite">마음에 드는 조합을 골라 보세요.</p></section></div>
+</main><script>const assetData={"hair-short":{"bounds":[17,25,1278,1092],"src":"art-2417dc869ff61ff3.webp"},"body":{"bounds":[203,21,618,1493],"src":"art-79d98450d4821c5c.webp"},"face-smile":{"bounds":[217,141,1105,714],"src":"art-a17f79f9de2aa8d0.webp"},"face-wink":{"bounds":[152,111,1236,796],"src":"art-3bea469b8b28c799.webp"},"outfit-stripes":{"bounds":[127,73,973,1147],"src":"art-2932d76c83acfaf5.webp"},"hair-bob":{"bounds":[26,35,1318,1028],"src":"art-17e1ff6f7ec69fb3.webp"},"outfit-overalls":{"bounds":[144,82,1026,1059],"src":"art-e7612c4872a077e9.webp"},"face-happy":{"bounds":[191,131,1153,760],"src":"art-e8d99fadaa846208.webp"},"accessory-beret":{"bounds":[125,113,1322,797],"src":"art-bd72869b5bc346a2.webp"},"hair-pigtails":{"bounds":[161,8,1213,1007],"src":"art-a37547e4f99296be.webp"},"accessory-glasses":{"bounds":[98,160,1578,568],"src":"art-56c0a1b8d9ca32a6.webp"},"outfit-dress":{"bounds":[25,69,1183,1136],"src":"art-6fa0a4362a3753fa.webp"},"outfit-hoodie":{"bounds":[94,97,955,1181],"src":"art-e5b8c89a2ac185da.webp"},"face-calm":{"bounds":[193,184,1141,646],"src":"art-b81e78953c325e77.webp"},"accessory-bag":{"bounds":[70,21,860,1463],"src":"art-09a17ad15ff58dd7.webp"},"hair-curly":{"bounds":[41,29,1297,1074],"src":"art-6b21ba730436d5e3.webp"}};
+const canvas=document.getElementById('character');
+const ctx=canvas.getContext('2d');
+const categories=[
+ {key:'face',label:'얼굴',items:[['방긋','face-smile'],['신나요','face-happy'],['윙크','face-wink'],['차분하게','face-calm']]},
+ {key:'hair',label:'머리',items:[['밤색 단발','hair-bob'],['곱슬 머리','hair-curly'],['금빛 양갈래','hair-pigtails'],['짧은 머리','hair-short']]},
+ {key:'outfit',label:'옷',items:[['초록 멜빵','outfit-overalls'],['분홍 원피스','outfit-dress'],['줄무늬 티','outfit-stripes'],['꿀빛 후드','outfit-hoodie']]},
+ {key:'accessory',label:'소품',items:[['없음',null],['동그란 안경','accessory-glasses'],['작은 베레모','accessory-beret'],['별 가방','accessory-bag']]}
+];
+let selection={face:0,hair:0,outfit:0,accessory:0};
+const storageKey='little-character-studio-v1';
+const favoriteKey='little-character-favorite-v1';
+const status=document.getElementById('status');
+function validCharacter(value){return value&&categories.every(cat=>Number.isInteger(value[cat.key])&&value[cat.key]>=0&&value[cat.key]<cat.items.length);}
+try{const saved=JSON.parse(localStorage.getItem(storageKey)||'null');if(validCharacter(saved))selection=saved;}catch{}
+const controls=document.getElementById('categories');
+categories.forEach(cat=>{
+ const field=document.createElement('fieldset'),legend=document.createElement('legend'),options=document.createElement('div');
+ legend.textContent=cat.label;field.append(legend);options.className='options';
+ cat.items.forEach(([name,asset],i)=>{
+  const button=document.createElement('button');button.type='button';button.dataset.category=cat.key;button.dataset.index=i;
+  if(asset){const thumb=document.createElement('img');thumb.src=assetData[asset].src;thumb.alt='';button.append(thumb);}else{const placeholder=document.createElement('span');placeholder.className='no-accessory';placeholder.textContent='—';button.append(placeholder);}
+  const label=document.createElement('span');label.textContent=name;button.append(label);
+  button.addEventListener('click',()=>{selection[cat.key]=i;render();save(cat.label+' · '+name+' 선택했어요.');});options.append(button);
+ });field.append(options);controls.append(field);
+});
+const images={};let loaded=false;
+function paint(id,x,y,w,h){if(!id||!images[id])return;const r=assetData[id].bounds;ctx.drawImage(images[id],r[0],r[1],r[2],r[3],x,y,w,h);}
+function render(){
+ controls.querySelectorAll('button').forEach(button=>button.setAttribute('aria-pressed',String(selection[button.dataset.category]===Number(button.dataset.index))));
+ canvas.setAttribute('aria-label',categories.map(cat=>cat.items[selection[cat.key]][0]).join(', ')+' 캐릭터');
+ if(!loaded)return;
+ ctx.clearRect(0,0,720,1120);ctx.save();ctx.scale(2,2);
+ paint('body',65,35,230,495);
+ const outfitRects=[[95,211,170,174],[87,210,186,184],[91,211,178,176],[89,200,182,187]];
+ paint(categories[2].items[selection.outfit][1],...outfitRects[selection.outfit]);
+ paint(categories[0].items[selection.face][1],116,118,128,78);
+ const hair=categories[1].items[selection.hair][1];
+ const hairRects=[[55,18,250,213],[52,16,256,205],[15,12,330,238],[52,16,256,185]];
+ paint(hair,...hairRects[selection.hair]);
+ const accessory=categories[3].items[selection.accessory][1];
+ const accessoryRects=[null,[104,131,152,55],[50,1,240,101],[119,210,154,183]];
+ if(accessory)paint(accessory,...accessoryRects[selection.accessory]);
+ ctx.restore();
+}
+function save(message){try{localStorage.setItem(storageKey,JSON.stringify(selection));status.textContent=message+' 조합이 저장됐어요.';}catch{status.textContent=message+' 현재 창에서는 유지됩니다.';}}
+document.getElementById('random').addEventListener('click',()=>{categories.forEach(cat=>selection[cat.key]=Math.floor(Math.random()*cat.items.length));render();save('새로운 조합을 골랐어요.');});
+document.getElementById('reset').addEventListener('click',()=>{selection={face:0,hair:0,outfit:0,accessory:0};render();save('처음 모습으로 돌아왔어요.');});
+const loadButton=document.getElementById('load-character');
+function readFavorite(){const value=JSON.parse(localStorage.getItem(favoriteKey)||'null');return validCharacter(value)?value:null;}
+try{loadButton.disabled=!readFavorite();}catch{loadButton.disabled=true;}
+document.getElementById('save-character').addEventListener('click',()=>{try{localStorage.setItem(favoriteKey,JSON.stringify(selection));loadButton.disabled=false;status.textContent='이 캐릭터를 저장했어요. 불러오기로 다시 만날 수 있어요.';}catch{status.textContent='저장하지 못했어요. 브라우저의 저장 공간을 확인해 주세요.';}});
+loadButton.addEventListener('click',()=>{try{const saved=readFavorite();if(!saved){loadButton.disabled=true;status.textContent='먼저 캐릭터를 저장해 주세요.';return;}selection=Object.fromEntries(categories.map(cat=>[cat.key,saved[cat.key]]));render();save('저장한 캐릭터를 불러왔어요.');}catch{status.textContent='저장한 캐릭터를 불러오지 못했어요.';}});
+status.textContent='그림을 불러오고 있어요…';
+Promise.all(Object.entries(assetData).map(([id,data])=>new Promise((resolve,reject)=>{const image=new Image();image.onload=()=>{images[id]=image;resolve();};image.onerror=reject;image.src=data.src;}))).then(()=>{loaded=true;render();status.textContent='각 부품을 고르면 그림이 바로 겹쳐져요.';}).catch(()=>{status.textContent='그림을 불러오지 못했어요. 페이지를 다시 열어 주세요.';});
+render();
+</script></body></html>

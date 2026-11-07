@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#faf5eb">
+<title>오늘 점심은?</title>
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; background: #faf5eb; color: #393c32; font-family: 'Malgun Gothic', system-ui, sans-serif; }
+main { min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 28px 20px; text-align: center; }
+h1 { margin: 0 0 32px; font-size: 23px; font-weight: 500; color: #747b64; }
+.roulette { position: relative; width: min(78vw, 380px); aspect-ratio: 1; border: 10px solid #384638; border-radius: 50%; background: #f4d69b; box-shadow: 0 0 0 3px #dfb868, 0 0 0 7px #f0d59d, 0 14px 30px #373c342b, inset 0 0 0 3px #f4d69b; }
+.roulette::after { content: ''; position: absolute; inset: -7px; border: 2px dotted #e9ca86; border-radius: 50%; pointer-events: none; }
+#wheel { display: block; width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 9px 14px #514b3518); }
+.pointer { position: absolute; z-index: 3; top: -27px; left: 50%; transform: translateX(-50%); width: 34px; height: 56px; background: linear-gradient(90deg, #a86d21, #ffe5a5 43%, #d8a34a 57%, #9e641c); clip-path: polygon(50% 100%, 2% 24%, 10% 8%, 28% 0, 72% 0, 90% 8%, 98% 24%); filter: drop-shadow(0 3px 2px #0004); }
+.pointer::after { content: ''; position: absolute; width: 11px; height: 11px; border-radius: 50%; top: 9px; left: 50%; transform: translateX(-50%); background: radial-gradient(circle at 35% 30%, #8a9b7e, #344232 70%); box-shadow: 0 0 0 2px #b57d2c; }
+.hub { position: absolute; z-index: 2; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 58px; height: 58px; border: 3px solid #a7782f; background: radial-gradient(circle at 35% 25%, #fff1c4, #e6bb62 50%, #b57a28); border-radius: 50%; box-shadow: 0 4px 9px #0005, inset 0 0 0 3px #f9dfa0; }
+.hub::after { content: ''; position: absolute; inset: 13px; border-radius: 50%; background: radial-gradient(circle at 35% 25%, #7a8d68, #354630 80%); border: 2px solid #b08036; box-shadow: inset 0 1px 3px #fff5; }
+output { display: block; margin: 26px 0 8px; min-height: 48px; font-size: clamp(28px, 7vw, 38px); font-weight: 700; letter-spacing: -.04em; }
+.hint { margin: 0 0 24px; color: #858675; font-size: 13px; }
+button { border: 0; border-radius: 999px; padding: 17px 34px; background: #65734f; color: white; font: 600 17px/1.4 'Malgun Gothic', system-ui, sans-serif; cursor: pointer; transition: transform .15s, background .2s; }
+button:hover { background: #52623e; }
+button:active { transform: scale(.96); }
+button:disabled { cursor: wait; opacity: .65; }
+button:focus-visible { outline: 3px solid #a3ad8e; outline-offset: 5px; }
+@media (prefers-reduced-motion: reduce) { button { transition: none; } }
+</style>
+</head>
+<body>
+<main>
+<h1>오늘 점심은?</h1>
+<div class="roulette">
+  <svg id="wheel" viewBox="-200 -200 400 400" role="img" aria-label="마라탕, 쌀국수, 편의점 김밥, 회사 앞 백반, 굶기 다섯 칸으로 나뉜 점심 룰렛"></svg>
+  <div class="hub" aria-hidden="true"></div>
+  <div class="pointer" aria-hidden="true"></div>
+</div>
+<output id="result" aria-live="polite" aria-atomic="true">뭐 먹을까?</output>
+<p class="hint">바늘이 가리키는 메뉴로, 맛있게 한 끼.</p>
+<button id="pick" type="button">점심 골라 줘</button>
+</main>
+<script>
+const menus = ['마라탕', '쌀국수', '편의점 김밥', '회사 앞 백반', '굶기'];
+const colors = ['#b84336', '#93631c', '#347057', '#286d89', '#76509b'];
+const wheel = document.getElementById('wheel');
+const button = document.getElementById('pick');
+const result = document.getElementById('result');
+const sector = 360 / menus.length;
+const ns = 'http://www.w3.org/2000/svg';
+function point(degrees, radius) {
+  const radians = degrees * Math.PI / 180;
+  return [Math.cos(radians) * radius, Math.sin(radians) * radius];
+}
+menus.forEach((name, i) => {
+  // Each sector's midpoint starts at the top, then advances clockwise.
+  const middle = -90 + i * sector;
+  const a = point(middle - sector / 2, 194);
+  const b = point(middle + sector / 2, 194);
+  const path = document.createElementNS(ns, 'path');
+  path.setAttribute('d', `M0 0 L${a} A194 194 0 0 1 ${b} Z`);
+  path.setAttribute('fill', colors[i]);
+  path.setAttribute('stroke', '#f4d69b');
+  path.setAttribute('stroke-width', '3');
+  wheel.append(path);
+  const label = document.createElementNS(ns, 'text');
+  const position = point(middle, 124);
+  label.setAttribute('x', position[0]);
+  label.setAttribute('y', position[1]);
+  label.setAttribute('text-anchor', 'middle');
+  label.setAttribute('dominant-baseline', 'central');
+  label.setAttribute('fill', '#fff9ed');
+  label.setAttribute('font-size', '20');
+  label.setAttribute('font-weight', '600');
+  label.setAttribute('transform', `rotate(${i * sector} ${position[0]} ${position[1]})`);
+  label.textContent = name;
+  wheel.append(label);
+});
+let rotation = 0;
+let spinning = false;
+button.addEventListener('click', async () => {
+  if (spinning) return;
+  spinning = true;
+  button.disabled = true;
+  button.textContent = '고르는 중…';
+  result.textContent = '두근두근…';
+  const index = Math.floor(Math.random() * menus.length);
+  // Land safely inside the chosen sector, never on a dividing line.
+  const offset = (Math.random() - .5) * sector * .5;
+  const target = ((-index * sector + offset) % 360 + 360) % 360;
+  const current = ((rotation % 360) + 360) % 360;
+  const travel = ((target - current) % 360 + 360) % 360;
+  const next = rotation + 360 * 5 + travel;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  try {
+    if (!reduced) {
+      const animation = wheel.animate([
+        { transform: `rotate(${rotation}deg)` },
+        { transform: `rotate(${next}deg)` }
+      ], { duration: 8000, easing: 'cubic-bezier(.2,.8,.3,1)', fill: 'forwards' });
+      await animation.finished;
+      wheel.style.transform = `rotate(${target}deg)`;
+      animation.cancel();
+    } else {
+      wheel.style.transform = `rotate(${target}deg)`;
+    }
+    rotation = target;
+    result.textContent = menus[index];
+  } finally {
+    spinning = false;
+    button.disabled = false;
+    button.textContent = '한 번 더 골라 줘';
+  }
+});
+</script>
+</body>
+</html>

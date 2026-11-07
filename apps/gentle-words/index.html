@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#e9e4f0">
+  <title>오늘도 잘 해내고 있어</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 100%; height: 100%; }
+    body { background: #e9e4f0; color: #665777; font-family: 'Malgun Gothic', system-ui, sans-serif; }
+    main { min-height: 100vh; min-height: 100svh; display: grid; place-items: center; padding: 20px; overflow: hidden; background: radial-gradient(ellipse at center, #f8f3f5, #e9e4f0); }
+    h1 { margin: 0; white-space: nowrap; font-size: clamp(20px, 5.5vw, 72px); font-weight: 500; letter-spacing: -.035em; line-height: 1.8; }
+    h1 span { display: inline-block; animation: wave 4.8s ease-in-out infinite; animation-delay: calc(var(--i) * -0.22s); }
+    h1 .space { width: .34em; }
+    @keyframes wave {
+      0%, 100% { transform: translateY(0); }
+      25% { transform: translateY(-.13em); }
+      75% { transform: translateY(.13em); }
+    }
+    @media (prefers-reduced-motion: reduce) { h1 span { animation: none; } }
+  </style>
+</head>
+<body>
+  <main>
+    <h1 aria-label="오늘도 잘 해내고 있어"><span style="--i:0" aria-hidden="true">오</span><span style="--i:1" aria-hidden="true">늘</span><span style="--i:2" aria-hidden="true">도</span><span class="space" style="--i:3" aria-hidden="true"> </span><span style="--i:4" aria-hidden="true">잘</span><span class="space" style="--i:5" aria-hidden="true"> </span><span style="--i:6" aria-hidden="true">해</span><span style="--i:7" aria-hidden="true">내</span><span style="--i:8" aria-hidden="true">고</span><span class="space" style="--i:9" aria-hidden="true"> </span><span style="--i:10" aria-hidden="true">있</span><span style="--i:11" aria-hidden="true">어</span></h1>
+  </main>
+</body>
+</html>

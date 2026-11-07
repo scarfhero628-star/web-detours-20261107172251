@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f5f2ed"><title>오늘의 응원 카드</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f5f2ed;color:#494c4a;font-family:'Malgun Gothic',system-ui,sans-serif}main{width:min(100% - 40px,580px);margin:0 auto;padding:52px 0 35px}.eyebrow{font:11px Georgia,serif;letter-spacing:.2em;color:#a09787}h1{font-size:29px;font-weight:500;letter-spacing:-.05em;margin:12px 0}.intro{font-size:14px;color:#969185;line-height:1.8;margin:0 0 26px}.choices{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:25px}.choices button{border:1px solid #e0dcd2;background:#fffcf6;color:#8b8375;padding:11px 16px;border-radius:999px;cursor:pointer;font:14px 'Malgun Gothic',system-ui,sans-serif;transition:background .2s,border-color .2s}.choices button[aria-pressed=true]{background:#e2e9dc;border-color:#85977b;color:#43573c}.choices button:hover{border-color:#aaa18f}button:focus-visible,input:focus-visible{outline:3px solid #a5b39a;outline-offset:4px}.card{border-radius:28px;position:relative;overflow:hidden;min-height:365px;padding:27px 30px;background:#fae8bb;color:#725a36;box-shadow:0 12px 36px #7f735115;transition:background 1s,color 1s}.card::after{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 25% 0%,#ffffff70,transparent 70%)}.card>*{position:relative;z-index:1}.card-top{display:flex;justify-content:space-between;font-size:11px;letter-spacing:.08em;opacity:.65}.weather-art{height:165px;display:grid;place-items:center}.weather-art svg{width:190px;height:150px;overflow:visible}.card h2{margin:0 0 8px;font-size:29px;font-weight:500;letter-spacing:-.04em}.card p{font-size:14px;line-height:1.85;margin:0;opacity:.8;word-break:keep-all}.note-area{margin-top:28px}label{display:block;font-size:14px;margin-bottom:10px}input{width:100%;padding:15px 16px;border:1px solid #dedacf;border-radius:12px;font:15px 'Malgun Gothic',system-ui,sans-serif;background:#fffcf6;color:#57574d}input::placeholder{color:#b2aa9d}.meta{display:flex;justify-content:space-between;gap:18px;margin-top:9px;color:#a39b8c;font-size:11px}#save-status{margin:0;line-height:1.7}.caption{text-align:center;font-size:11px;color:#aaa191;line-height:1.9;margin:25px 0 0}@media(max-width:450px){main{padding-top:32px}.card{padding:25px;min-height:350px}.choices button{padding:10px 13px;font-size:13px}h1{font-size:26px}}@media(prefers-reduced-motion:reduce){.card,.choices button{transition:none}}
+.export{display:block;width:100%;margin-top:22px;padding:15px;border:0;border-radius:13px;background:#687c65;color:#fffaf2;cursor:pointer;font:600 15px 'Malgun Gothic',system-ui,sans-serif}.export:hover{background:#53694f}.export:disabled{opacity:.5;cursor:wait}
+</style></head>
+<body><main>
+<p class="eyebrow">A LITTLE CHEER FOR TODAY</p><h1>오늘의 응원 카드</h1><p class="intro">오늘 나에게 건네고 싶은 응원을 골라 보세요.</p>
+<div class="choices" id="choices" role="group" aria-label="오늘의 응원 선택"></div>
+<article class="card" id="card" aria-labelledby="weather-title">
+<div class="card-top"><span>오늘의 응원</span><time id="date"></time></div>
+<div class="weather-art" id="weather-art" aria-hidden="true"></div>
+<h2 id="weather-title">오늘도 잘하고 있어요</h2><p id="description">작아 보이는 노력도 차곡차곡 쌓이고 있어요. 지금의 나를 믿어 주세요.</p>
+</article>
+<div class="note-area"><label for="note">오늘의 한 줄</label><input id="note" type="text" maxlength="120" placeholder="나에게, 혹은 소중한 사람에게 한 줄을 남겨 보세요." autocomplete="off"><div class="meta"><p id="save-status" role="status" aria-live="polite">응원과 메모는 이 브라우저에 자동 저장돼요.</p><span id="count">0 / 120</span></div></div>
+<button id="export" class="export" type="button">카드 이미지 저장</button>
+<p id="announcement" role="status" aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)"></p>
+<p class="caption">작은 말 한마디가 힘이 되는 날.<br>오늘의 응원을 한 장에 담아 보세요.</p>
+</main><script>
+const sun=`<g stroke="#e2aa46" stroke-width="5" stroke-linecap="round"><path d="M95 13 V24 M95 116 V127 M38 70 H49 M141 70 H152 M55 30 L63 38 M127 102 L135 110 M55 110 L63 102 M127 38 L135 30"/></g><circle cx="95" cy="70" r="34" fill="#f3c660"/><circle cx="85" cy="63" r="3" fill="#af7938"/><circle cx="105" cy="63" r="3" fill="#af7938"/><path d="M86 80 Q95 88 104 80" fill="none" stroke="#af7938" stroke-width="3" stroke-linecap="round"/>`;
+const cloud=`<path d="M48 111 Q19 111 22 89 Q24 70 45 70 Q46 41 74 42 Q101 38 111 64 Q132 53 146 72 Q174 71 173 91 Q174 112 149 112Z" fill="#fffaf0"/><path d="M49 107 H147" stroke="#c6cfce" stroke-width="3" opacity=".3" stroke-linecap="round"/>`;
+const moods=[
+ {id:'happy',name:'나를 믿기',title:'오늘도 잘하고 있어요',description:'작아 보이는 노력도 차곡차곡 쌓이고 있어요. 지금의 나를 믿어 주세요.',weather:'맑음',background:'#fae8bb',color:'#725a36',art:`<path d="M95 17 L112 53 L152 58 L123 85 L131 125 L95 106 L59 125 L67 85 L38 58 L78 53Z" fill="#e9bd65"/><path d="M95 30 L106 57 L131 61" fill="none" stroke="#fff0bd" stroke-width="4" stroke-linecap="round"/><circle cx="82" cy="76" r="3" fill="#a67539"/><circle cx="108" cy="76" r="3" fill="#a67539"/><path d="M86 90 Q95 98 104 90" fill="none" stroke="#a67539" stroke-width="3" stroke-linecap="round"/>`},
+ {id:'calm',name:'천천히 가기',title:'천천히 가도 괜찮아요',description:'다른 사람의 속도와 비교하지 않아도 돼요. 나만의 걸음으로 나아가요.',background:'#dceadc',color:'#4c6956',art:`<path d="M95 130 V65" stroke="#6f986c" stroke-width="5" stroke-linecap="round"/><path d="M94 96 Q41 96 43 54 Q89 51 94 96Z" fill="#9ebc8a"/><path d="M96 74 Q98 32 143 26 Q149 67 96 74Z" fill="#7fa980"/><path d="M91 92 L57 65 M101 69 L132 38" stroke="#cfe1bd" stroke-width="3" stroke-linecap="round"/><ellipse cx="95" cy="132" rx="42" ry="6" fill="#779b6a" opacity=".15"/>`}, {id:'tired',name:'잠깐 쉬기',title:'쉬어 가는 것도 용기예요',description:'잠깐 멈춘다고 멀어지는 건 아니에요. 충분히 쉬고 다시 걸어도 좋아요.',background:'#e9dfd1',color:'#7a6856',art:`<ellipse cx="89" cy="126" rx="58" ry="8" fill="#c8b597"/><path d="M130 66 Q172 59 160 91 Q153 107 132 102" fill="none" stroke="#b39377" stroke-width="8"/><path d="M42 63 H138 L130 110 Q89 135 50 110Z" fill="#fff8e8" stroke="#c3a889" stroke-width="3"/><ellipse cx="90" cy="63" rx="48" ry="10" fill="#bda782"/><path d="M70 44 Q58 29 72 14 M94 40 Q83 26 96 13 M116 44 Q105 31 117 21" fill="none" stroke="#c8b79e" stroke-width="3" stroke-linecap="round"/>`}, {id:'sad',name:'다시 시작하기',title:'다시 시작할 수 있어요',description:'어제의 아쉬움이 오늘을 정하지는 않아요. 작은 시작 하나면 충분해요.',background:'#d8e5ef',color:'#536c83',art:`<path d="M33 112 A62 62 0 0 1 157 112" fill="#ebc88b"/><path d="M48 111 A47 47 0 0 1 142 111" fill="#f8e4b6"/><path d="M18 113 H172" stroke="#94aebb" stroke-width="5" stroke-linecap="round"/><g stroke="#e0bb7f" stroke-width="4" stroke-linecap="round"><path d="M95 17 V31 M38 40 L48 49 M152 40 L142 49 M15 77 L29 80 M175 77 L161 80"/></g><path d="M55 127 H136 M73 139 H119" stroke="#a2bcc9" stroke-width="3" stroke-linecap="round"/>`}, {id:'excited',name:'한 걸음 도전',title:'작은 도전을 응원해요',description:'완벽한 준비보다 작은 한 걸음. 오늘은 해 보고 싶던 일에 살짝 다가가요.',background:'#f0dfeb',color:'#86647e',art:`<path d="M95 16 Q126 43 120 93 L70 93 Q64 43 95 16Z" fill="#fff3e5" stroke="#c7a7b5" stroke-width="3"/><circle cx="95" cy="55" r="13" fill="#b5cfd7" stroke="#c7a7b5" stroke-width="4"/><path d="M71 73 L54 100 L73 94 M119 73 L136 100 L117 94" fill="#d69aa2"/><path d="M81 99 Q75 121 95 138 Q115 121 109 99" fill="#e6c17c"/><path d="M90 101 Q85 115 95 125 Q105 115 100 101" fill="#fff0bb"/><path d="M39 37 L43 28 L47 37 L56 41 L47 45 L43 54 L39 45 L30 41Z" fill="#d4b1c7"/>`}, {id:'restless',name:'내 편 되기',title:'언제나 나의 편이 되어 줘요',description:'잘한 날에도, 아쉬운 날에도 나를 다정하게 대해주세요. 충분히 소중한 사람이에요.',background:'#e5deee',color:'#756583',art:`<path d="M95 129 Q24 87 30 51 Q35 15 70 25 Q88 29 95 48 Q102 29 120 25 Q155 15 160 51 Q166 87 95 129Z" fill="#d3a0b2"/><path d="M48 53 Q50 36 67 39" fill="none" stroke="#f5d4d9" stroke-width="6" stroke-linecap="round"/><path d="M75 79 Q81 74 87 79 M103 79 Q109 74 115 79 M87 94 Q95 101 103 94" fill="none" stroke="#92647b" stroke-width="3" stroke-linecap="round"/>`}
+];
+const key='encouragement-card-v1';
+const note=document.getElementById('note'),card=document.getElementById('card');
+let selected='happy';
+try{const saved=JSON.parse(localStorage.getItem(key)||'null');if(saved){if(moods.some(m=>m.id===saved.mood))selected=saved.mood;if(typeof saved.note==='string')note.value=saved.note.slice(0,120);}}catch{document.getElementById('save-status').textContent='저장된 내용을 불러오지 못했어요. 현재 창에서는 사용할 수 있어요.';}
+const choices=document.getElementById('choices');
+moods.forEach(mood=>{const button=document.createElement('button');button.type='button';button.textContent=mood.name;button.dataset.mood=mood.id;button.addEventListener('click',()=>{selected=mood.id;render();save();document.getElementById('announcement').textContent=mood.name+'. '+mood.title;});choices.append(button);});
+function render(){const mood=moods.find(m=>m.id===selected);card.style.backgroundColor=mood.background;card.style.color=mood.color;document.getElementById('weather-title').textContent=mood.title;document.getElementById('description').textContent=mood.description;document.getElementById('weather-art').innerHTML='<svg viewBox="0 0 190 150" xmlns="http://www.w3.org/2000/svg">'+mood.art+'</svg>';choices.querySelectorAll('button').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.mood===selected)));document.getElementById('count').textContent=note.value.length+' / 120';}
+function save(){try{localStorage.setItem(key,JSON.stringify({mood:selected,note:note.value}));document.getElementById('save-status').textContent='응원과 메모가 저장됐어요.';}catch{document.getElementById('save-status').textContent='저장하지 못했어요. 창을 닫기 전에 메모를 복사해 주세요.';}}
+note.addEventListener('input',()=>{document.getElementById('count').textContent=note.value.length+' / 120';save();});
+function updateDate(){const now=new Date();document.getElementById('date').textContent=now.toLocaleDateString('ko-KR',{month:'long',day:'numeric',weekday:'short'});document.getElementById('date').dateTime=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');}
+updateDate();window.addEventListener('focus',updateDate);render();
+const exportButton=document.getElementById('export');
+function wrapText(context,text,maxWidth){
+ const lines=[];let line='';
+ const parts=typeof Intl.Segmenter==='function'?Array.from(new Intl.Segmenter('ko',{granularity:'grapheme'}).segment(text),part=>part.segment):Array.from(text);
+ for(const part of parts){if(line&&context.measureText(line+part).width>maxWidth){lines.push(line.trimEnd());line=part.trimStart();}else line+=part;}
+ if(line)lines.push(line);return lines;
+}
+function loadWeatherImage(art){return new Promise((resolve,reject)=>{
+ const image=new Image();image.onload=()=>resolve(image);image.onerror=reject;
+ image.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="380" height="300" viewBox="0 0 190 150">'+art+'</svg>');
+});}
+exportButton.addEventListener('click',async()=>{
+ const mood=moods.find(item=>item.id===selected);
+ const memo=note.value.trim();const date=new Date();
+ exportButton.disabled=true;exportButton.textContent='그림으로 담는 중…';
+ try{
+  if(document.fonts)await document.fonts.ready;
+  const image=await loadWeatherImage(mood.art);
+  const picture=document.createElement('canvas');picture.width=1080;picture.height=1350;
+  const context=picture.getContext('2d');
+  context.fillStyle='#f5f2ed';context.fillRect(0,0,1080,1350);
+  context.fillStyle=mood.background;context.beginPath();context.roundRect(65,65,950,1220,48);context.fill();
+  const glow=context.createRadialGradient(220,100,0,220,100,900);glow.addColorStop(0,'#ffffff66');glow.addColorStop(1,'#ffffff00');
+  context.save();context.beginPath();context.roundRect(65,65,950,1220,48);context.clip();context.fillStyle=glow;context.fillRect(65,65,950,1220);context.restore();
+  context.fillStyle=mood.color;context.globalAlpha=.7;context.font='24px "Malgun Gothic",system-ui,sans-serif';context.textAlign='left';context.fillText('오늘의 응원',125,140);
+  context.textAlign='right';context.fillText(date.toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'}),955,140);context.globalAlpha=1;
+  context.drawImage(image,350,210,380,300);
+  context.textAlign='center';context.font='500 58px "Malgun Gothic",system-ui,sans-serif';context.fillText(mood.title,540,610);
+  context.globalAlpha=.8;context.font='29px "Malgun Gothic",system-ui,sans-serif';
+  const description=wrapText(context,mood.description,760);description.forEach((line,index)=>context.fillText(line,540,680+index*49));context.globalAlpha=1;
+  context.strokeStyle=mood.color;context.globalAlpha=.16;context.lineWidth=2;context.beginPath();context.moveTo(160,865);context.lineTo(920,865);context.stroke();context.globalAlpha=.65;
+  context.font='23px "Malgun Gothic",system-ui,sans-serif';context.fillText('오늘의 한 줄',540,925);context.globalAlpha=.95;
+  context.font='30px "Malgun Gothic",system-ui,sans-serif';
+  const lines=wrapText(context,memo||'오늘도 나의 편이 되어 줄게요.',740);
+  lines.forEach((line,index)=>context.fillText(line,540,995+index*48));
+  context.globalAlpha=.45;context.font='18px Georgia,serif';context.fillText('A LITTLE CHEER FOR TODAY',540,1240);context.globalAlpha=1;
+  const blob=await new Promise((resolve,reject)=>picture.toBlob(value=>value?resolve(value):reject(new Error('PNG export failed')),'image/png'));
+  const url=URL.createObjectURL(blob);const link=document.createElement('a');link.href=url;
+  const day=date.getFullYear()+'-'+String(date.getMonth()+1).padStart(2,'0')+'-'+String(date.getDate()).padStart(2,'0');
+  link.download='오늘의응원-'+day+'.png';document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
+  document.getElementById('save-status').textContent='PNG 이미지 다운로드를 시작했어요. 다운로드 폴더를 확인해 주세요.';
+ }catch{document.getElementById('save-status').textContent='이미지를 만들지 못했어요. 잠시 후 다시 눌러 주세요.';}
+ finally{exportButton.disabled=false;exportButton.textContent='카드 이미지 저장';}
+});
+</script></body></html>

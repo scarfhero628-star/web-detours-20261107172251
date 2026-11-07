@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>오늘 물 몇 잔</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f5f2ed; color: #302d38; font-family: system-ui, sans-serif; transition: background-color .8s ease; }
+    main { min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 30px; padding: 24px; }
+    h1 { position: absolute; bottom: calc(50% + 115px); margin: 0; font-size: clamp(20px, 4vw, 26px); font-weight: 500; letter-spacing: -.03em; color: #79658e; }
+    output { max-width: 100%; overflow-wrap: anywhere; text-align: center; font-size: clamp(88px, 18vw, 160px); font-weight: 600; line-height: 1.1; letter-spacing: -.06em; font-variant-numeric: tabular-nums; }
+    button { border: 0; border-radius: 999px; padding: 17px 38px; background: #76628f; color: #fff; font: 600 18px/1.4 system-ui, sans-serif; cursor: pointer; box-shadow: 0 6px 20px #76628f20; transition: background .2s, transform .15s; }
+    button:hover { background: #66517f; }
+    button:active { transform: translateY(2px) scale(.96); background: #8b73a4; }
+    button:focus-visible { outline: 3px solid #a08aba; outline-offset: 5px; }
+    body.celebrate { background-color: #f4e8fa; }
+    main { position: relative; }
+    .praise { position: absolute; top: calc(50% + 160px); left: 24px; right: 24px; margin: 0; text-align: center; font-size: 15px; color: #806295; opacity: 0; transform: translateY(4px); transition: opacity .3s ease, transform .3s ease; pointer-events: none; }
+    .praise.visible { opacity: 1; transform: translateY(0); }
+    @media (prefers-reduced-motion: reduce) { body, .praise { transition: none; } }
+    @media (prefers-reduced-motion: reduce) { button { transition: none; } }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>오늘 물 몇 잔</h1>
+    <output id="count" aria-live="polite" aria-atomic="true" aria-label="오늘 마신 물 잔 수">0</output>
+    <button id="increment" type="button">한 잔 마셨다</button>
+    <p id="praise" class="praise" role="status" aria-live="polite"></p>
+  </main>
+  <script>
+    let count = 0n;
+    const display = document.getElementById('count');
+    const praise = document.getElementById('praise');
+    let praiseTimer;
+    let backgroundTimer;
+    const compliments = ['잘했어. 한 잔 더!', '물 마시기, 잘 챙겼어!', '잠깐 쉬고, 물 한 잔!', '오늘도 촉촉한 하루!'];
+    document.getElementById('increment').addEventListener('click', () => {
+      count += 1n;
+      display.textContent = count.toString();
+      if (count % 10n === 0n) {
+        clearTimeout(praiseTimer);
+        const milestone = count / 10n;
+        praise.textContent = milestone % 2n === 1n
+          ? `${count}잔 기록했어. 잘 챙겼어!`
+          : compliments[Number((milestone / 2n - 1n) % BigInt(compliments.length))];
+        praise.classList.add('visible');
+        praiseTimer = setTimeout(() => { praise.classList.remove('visible'); }, 1800);
+      }
+      if (count === 100n) {
+        clearTimeout(backgroundTimer);
+        document.body.classList.add('celebrate');
+        backgroundTimer = setTimeout(() => { document.body.classList.remove('celebrate'); }, 2400);
+      }
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      display.getAnimations().forEach(animation => animation.cancel());
+      display.animate([
+        { transform: 'translateY(0) scale(1)', color: '#302d38' },
+        { transform: 'translateY(-7px) scale(1.08)', color: '#806295', offset: 0.35 },
+        { transform: 'translateY(0) scale(1)', color: '#302d38' }
+      ], { duration: 340, easing: 'cubic-bezier(.22,.61,.36,1)' });
+      const button = document.getElementById('increment');
+      button.getAnimations().forEach(animation => animation.cancel());
+      button.animate([
+        { transform: 'translateY(2px) scale(.96)', backgroundColor: '#8b73a4' },
+        { transform: 'translateY(-1px) scale(1.015)', offset: 0.6 },
+        { transform: 'translateY(0) scale(1)' }
+      ], { duration: 260, easing: 'ease-out' });
+    });
+  </script>
+</body>
+</html>

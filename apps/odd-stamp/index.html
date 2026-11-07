@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>별것 아닌 우표 수집실</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#e7e5dc;color:#364c47;font-family:'Malgun Gothic',system-ui,sans-serif}main{max-width:1150px;margin:auto;padding:55px 28px}header{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:35px}h1{font-size:28px;letter-spacing:-.05em;margin:0 0 12px;font-weight:500}.intro{font-size:14px;color:#78867c;margin:0;line-height:1.8}button{border:0;border-radius:999px;background:#365e54;color:#fff8e5;padding:16px 24px;font:600 15px 'Malgun Gothic',system-ui,sans-serif;cursor:pointer}button:hover{background:#244c42}button:focus-visible{outline:3px solid #a8874f;outline-offset:5px}#gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:24px}figure{margin:0;min-width:0;background:#f0eee6;border:1px solid #d8dacd;padding:23px 20px 17px;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:end}figure img{width:100%;height:290px;object-fit:contain;filter:drop-shadow(0 6px 6px #39483c18)}figcaption{font-size:12px;color:#7b8376;line-height:1.8;text-align:center;margin-top:18px}#status{min-height:24px;color:#71816e;font-size:13px;margin:0 0 24px}.note{color:#899181;font-size:12px;line-height:1.8;margin-top:30px}@media(max-width:500px){main{padding:35px 18px}#gallery{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}figure{padding:14px 10px}figure img{height:200px}h1{font-size:25px}}
+</style></head><body><main>
+<header><div><h1>별것 아닌 우표 수집실</h1><p class="intro">양말 한 짝도, 식은 커피도. 모아 두면 작은 보물이 됩니다.</p></div><button id="create" type="button">＋ 우표 한 장 더 뽑기</button></header>
+<p id="status" role="status" aria-live="polite"></p><section id="gallery" aria-label="모은 우표 갤러리"></section>
+<p class="note">섬세한 판화로 만든 컵라면·커피·열쇠·클립 우표 중 한 장을 뽑아요. 같은 그림이 다시 나올 수 있으며, 모은 우표는 이 브라우저에 저장됩니다.</p>
+</main><script>
+const original='art-c2240f787a6813e2.webp';
+const key='odd-stamp-collection-v1';
+const gallery=document.getElementById('gallery');
+const status=document.getElementById('status');
+const palettes=[['#245d58','#d27c53'],['#704659','#b78945'],['#385c78','#c78053'],['#5b6444','#bd7653'],['#864a38','#52766d']];
+const subjects=[
+ {name:'컵라면',en:'INSTANT NOODLES',art:`<ellipse cx="120" cy="204" rx="61" ry="9" fill="INK" opacity=".12"/><path d="M65 115 L79 199 Q120 215 161 199 L175 115Z" fill="ACCENT" stroke="INK" stroke-width="3"/><path d="M73 144 H168 M77 178 H164" stroke="#f3e5c8" stroke-width="12"/><ellipse cx="120" cy="115" rx="55" ry="17" fill="#ebd29c" stroke="INK" stroke-width="3"/><path d="M78 116 Q89 99 100 116 T122 116 T144 116 T166 116" fill="none" stroke="INK" stroke-width="3"/><path d="M99 91 Q88 77 99 65 M124 88 Q113 73 124 60 M147 91 Q136 77 147 65" fill="none" stroke="INK" stroke-width="2"/>`},
+ {name:'식은 커피',en:'COLD COFFEE',art:`<ellipse cx="115" cy="209" rx="62" ry="8" fill="INK" opacity=".12"/><path d="M159 121 Q204 115 190 157 Q181 180 160 168" fill="none" stroke="INK" stroke-width="9"/><path d="M62 110 L70 185 Q112 218 158 185 L168 110Z" fill="ACCENT" stroke="INK" stroke-width="3"/><ellipse cx="115" cy="110" rx="53" ry="16" fill="#f3e5c8" stroke="INK" stroke-width="3"/><ellipse cx="115" cy="113" rx="43" ry="10" fill="INK"/><path d="M82 133 L86 175" stroke="#f3e5c8" stroke-width="6" opacity=".6"/>`},
+ {name:'잃어버린 열쇠',en:'SPARE KEY',art:`<g transform="rotate(-28 120 145)"><circle cx="120" cy="102" r="34" fill="ACCENT" stroke="INK" stroke-width="4"/><circle cx="120" cy="102" r="16" fill="#f3e5c8" stroke="INK" stroke-width="3"/><path d="M110 135 V216 H140 V203 H127 V188 H142 V174 H127 V135Z" fill="ACCENT" stroke="INK" stroke-width="4"/></g>`},
+ {name:'집게 하나',en:'PAPER CLIP',art:`<g transform="rotate(23 120 140)"><path d="M140 105 V187 Q140 220 115 220 Q85 220 85 187 V92 Q85 65 110 65 Q135 65 135 92 V175 Q135 192 120 192 Q106 192 106 175 V105" fill="none" stroke="INK" stroke-width="13" stroke-linecap="round"/><path d="M140 105 V187 Q140 220 115 220 Q85 220 85 187 V92 Q85 65 110 65 Q135 65 135 92 V175 Q135 192 120 192 Q106 192 106 175 V105" fill="none" stroke="ACCENT" stroke-width="7" stroke-linecap="round"/></g>`}
+];
+let collection=[];let storageError=false;
+try{const saved=JSON.parse(localStorage.getItem(key)||'[]');if(Array.isArray(saved))collection=saved.filter(item=>item&&Number.isInteger(item.subject)&&item.subject>=0&&item.subject<subjects.length&&Number.isInteger(item.palette)&&item.palette>=0&&item.palette<palettes.length&&Number.isInteger(item.value)&&item.value>0&&item.value<1000);}catch{storageError=true;}
+const stampImages=["art-cd4ed76d392b7136.webp","art-9177d7ddc1d1a8ab.webp","art-1af781362451376b.webp","art-afedae59b858bab7.webp"];
+function stamp(item){return stampImages[item.subject];}
+function addFigure(src,label){const figure=document.createElement('figure');const img=document.createElement('img');img.src=src;img.alt=label;const caption=document.createElement('figcaption');caption.textContent=label;figure.append(img,caption);gallery.append(figure);return figure;}
+function updateStatus(){status.textContent=`모은 우표 ${collection.length+1}장`+(storageError?' · 저장하지 못했어요. 이 창을 닫으면 새 우표가 사라질 수 있습니다.':'');}
+function render(){gallery.replaceChildren();addFigure(original,'No. 001 · 짝 잃은 양말');collection.forEach((item,i)=>addFigure(stamp(item),`No. ${String(i+2).padStart(3,'0')} · ${subjects[item.subject].name}`));updateStatus();}
+document.getElementById('create').addEventListener('click',()=>{
+ const item={subject:Math.floor(Math.random()*subjects.length),palette:Math.floor(Math.random()*palettes.length),value:10+Math.floor(Math.random()*90)};
+ collection.push(item);
+ try{localStorage.setItem(key,JSON.stringify(collection));storageError=false;}catch{storageError=true;}
+ const figure=addFigure(stamp(item),`No. ${String(collection.length+1).padStart(3,'0')} · ${subjects[item.subject].name}`);
+ updateStatus();figure.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'nearest'});
+});
+// Start the collection with three everyday treasures beside the original.
+if(!collection.length){collection=[{subject:0,palette:1,value:40},{subject:1,palette:2,value:20},{subject:2,palette:3,value:50}];try{localStorage.setItem(key,JSON.stringify(collection));}catch{storageError=true;}}
+if(!collection.some(item=>item.subject===3)){collection.push({subject:3,palette:0,value:10});try{localStorage.setItem(key,JSON.stringify(collection));}catch{storageError=true;}}
+render();
+</script></body></html>

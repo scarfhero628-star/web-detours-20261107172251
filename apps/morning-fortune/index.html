@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#eee8f1"><title>오늘 만나는 한 장</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#eee8f1;color:#665473;font-family:'Malgun Gothic',system-ui,sans-serif}main{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:35px 22px;background:radial-gradient(ellipse at center,#faf5ef,#e7dfed)}.eyebrow{font:11px Georgia,serif;letter-spacing:.22em;color:#a897ad;text-align:center;margin:0 0 14px}h1{font-size:24px;font-weight:500;letter-spacing:-.04em;margin:0 0 26px}.card{position:relative;width:min(100%,350px);min-height:440px;border:1px solid #d2bc93;border-radius:22px;background:#fff9ed;box-shadow:0 14px 42px #6c577e19;text-align:center;padding:40px 34px;display:flex;flex-direction:column;align-items:center;justify-content:center}.card::before{content:'';position:absolute;inset:10px;border:1px solid #e2d3b8;border-radius:14px;pointer-events:none}time{position:absolute;top:29px;font-size:11px;color:#ad9b81;letter-spacing:.05em}.symbol{width:100px;height:100px;border-radius:50%;display:grid;place-items:center;font:57px Georgia,serif;color:#b3935c;border:1px solid #dfceb1;margin:18px 0 25px;background:radial-gradient(#f4e8cf,#fff9ed)}h2{font-size:25px;font-weight:500;margin:0 0 19px;letter-spacing:-.04em}.fortune{font-size:15px;line-height:2;color:#958197;margin:0;word-break:keep-all}.small{font:10px Georgia,serif;letter-spacing:.18em;color:#bfad90;margin:27px 0 0}.note{text-align:center;line-height:1.9;font-size:11px;color:#a89bb1;margin:24px 0 0}.card{animation:appear .8s ease-out}@keyframes appear{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}@media(prefers-reduced-motion:reduce){.card{animation:none}}
+:root{color-scheme:light;--bg:#f4f4e9;--glow:#fffdf2;--edge:#e5efe6;--ink:#426158;--muted:#65796a;--paper:#fffef4;--border:#b8c9a4;--inner:#dbe4ca;--accent:#73884b;--disc:#eef4d9;--shadow:#42615818}
+:root[data-mood="day"]{--bg:#eee8e1;--glow:#f8f3ea;--edge:#e5e1da;--ink:#685d50;--muted:#827465;--paper:#fff9ef;--border:#cdbb9c;--inner:#e5d8c2;--accent:#a08350;--disc:#f3e6ce;--shadow:#685d5018}
+:root[data-mood="night"]{color-scheme:dark;--bg:#171d30;--glow:#293048;--edge:#151b2c;--ink:#e1dbea;--muted:#b4adc5;--paper:#2a2d43;--border:#77718d;--inner:#45445e;--accent:#d2bf94;--disc:#3d3b53;--shadow:#080b1850}
+body{background:var(--bg);color:var(--ink)}main{background:radial-gradient(ellipse at center,var(--glow),var(--edge))}.card{background:var(--paper);border-color:var(--border);box-shadow:0 14px 42px var(--shadow)}.card::before{border-color:var(--inner)}.eyebrow,time,.fortune,.small,.note{color:var(--muted)}.symbol{color:var(--accent);border-color:var(--border);background:radial-gradient(var(--disc),var(--paper))}body,main,.card,.symbol,.eyebrow,time,.fortune,.small,.note{transition:background-color 2s ease,color 2s ease,border-color 2s ease,box-shadow 2s ease}@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head><body><main><p class="eyebrow">A LITTLE LUCK, JUST FOR YOU</p><h1>오늘 만나는 한 장</h1><article class="card" aria-labelledby="title"><time id="date"></time><div id="symbol" class="symbol" aria-hidden="true">✧</div><h2 id="title">오늘의 작은 행운</h2><p class="fortune" id="fortune"></p><p class="small">YOUR DAILY FORTUNE</p></article><p class="note">열 때마다, 오늘을 위한 작은 힌트 한 장.<br>가볍게 즐기며 나에게 다정한 시간을 보내요.</p></main><script>
+const fortunes=[
+ ['✧','반가운 소식','작은 대화에서 반가운 소식을 만날지도 몰라요. 오늘은 안부 한마디를 먼저 건네 보세요.'],
+ ['☀','시작하기 좋은 날','미뤄 둔 일을 아주 작게 시작해 보세요. 첫걸음을 내딛고 나면 생각보다 가벼울 거예요.'],
+ ['☘','뜻밖의 행운','평범한 하루에도 좋은 순간은 숨어 있어요. 익숙한 길을 걸을 때 주변을 한 번 더 둘러보세요.'],
+ ['♡','다정함의 힘','내가 건넨 작은 다정함이 하루를 따뜻하게 만들 거예요. 나 자신에게도 좋은 말을 들려주세요.'],
+ ['☾','쉬어 가는 여유','오늘은 마음에 여백을 남겨 보세요. 잠깐의 쉼이 새로운 생각을 데려올 수 있어요.'],
+ ['❀','새로운 발견','늘 하던 일에 작은 변화를 더해 보세요. 새로운 취향이나 뜻밖의 재미를 발견할지도 몰라요.'],
+ ['☆','작은 성취','한 가지를 끝내는 기쁨이 찾아올 날이에요. 크기보다 해냈다는 마음을 소중히 여겨 보세요.'],
+ ['✦','나만의 속도','천천히 가도 좋은 방향으로 가고 있어요. 오늘은 비교를 잠시 내려놓고 내 걸음을 믿어 보세요.'],
+ ['✿','마음이 통하는 날','솔직하고 부드럽게 말해 보세요. 짧은 대화가 서로를 이해하는 계기가 될 수 있어요.'],
+ ['☼','밝은 시선','작은 불편보다 작은 기쁨을 하나 더 찾아보세요. 오늘의 풍경이 조금 다르게 보일 거예요.']
+];
+const fortune=fortunes[Math.floor(Math.random()*fortunes.length)];
+document.getElementById('symbol').textContent=fortune[0];document.getElementById('title').textContent=fortune[1];document.getElementById('fortune').textContent=fortune[2];
+function updateTimeMood(){
+ const now=new Date();const hour=now.getHours();
+ const mood=hour>=6&&hour<12?'morning':hour>=12&&hour<18?'day':'night';
+ document.documentElement.dataset.mood=mood;
+ document.querySelector('meta[name="theme-color"]').content={morning:'#f4f4e9',day:'#eee8e1',night:'#171d30'}[mood];
+ const date=document.getElementById('date');date.textContent=now.toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'short'});date.dateTime=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+}
+updateTimeMood();setInterval(updateTimeMood,30000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)updateTimeMood()});
+</script></body></html>

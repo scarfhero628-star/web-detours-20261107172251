@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#edf2e7">
+  <meta name="description" content="한 번에 하나씩, 누른 만큼 기억하는 작은 카운터.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>하나 더</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100svh; display: grid; place-items: center; background: #edf2e7; color: #324c3b; font-family: 'Malgun Gothic', system-ui, sans-serif; }
+    main { width: min(100%, 530px); padding: 44px 25px; text-align: center; }
+    .eyebrow { color: #61765b; letter-spacing: .18em; font-size: 11px; margin: 0 0 18px; }
+    h1 { font-size: 22px; font-weight: 500; margin: 0; }
+    .count { display: block; font-size: clamp(70px, 19vw, 124px); font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1.4; letter-spacing: -.06em; margin: 28px 0 32px; overflow-wrap: anywhere; }
+    button { font: inherit; cursor: pointer; touch-action: manipulation; }
+    #increment { width: 100%; min-height: 100px; border: 0; border-radius: 26px; color: #fffdf6; background: #526e51; box-shadow: 0 9px 0 #3c553c; font-size: 30px; font-weight: 600; transition: transform .08s, box-shadow .08s; }
+    #increment:active { transform: translateY(6px); box-shadow: 0 3px 0 #3c553c; }
+    #increment:disabled { opacity: .6; cursor: default; }
+    .status { min-height: 48px; font-size: 13px; color: #546c4e; line-height: 1.8; margin: 28px 0 12px; }
+    details { font-size: 12px; color: #607258; line-height: 1.9; }
+    summary { cursor: pointer; }
+    details p { max-width: 360px; margin: 12px auto; }
+    #install { display: block; margin: 22px auto 0; border: 1px solid #a3b398; border-radius: 12px; background: #f6f8f1; padding: 12px 18px; color: #3e593c; font-size: 13px; }
+    #install[hidden] { display: none; }
+    :focus-visible { outline: 3px solid #af7b3d; outline-offset: 6px; }
+    @media (prefers-reduced-motion: reduce) { #increment { transition: none; } }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="eyebrow">ONE MORE, AT YOUR PACE</p>
+    <h1>하나 더</h1>
+    <output class="count" id="count" aria-label="현재 누른 횟수" aria-live="polite" aria-atomic="true">0</output>
+    <button id="increment" type="button" aria-label="횟수 1 올리기">+1 누르기</button>
+    <p class="status" id="status" role="status">누른 값은 이 브라우저에 저장돼요.</p>
+    <details><summary>저장과 앱 설치 안내</summary><p>같은 기기와 같은 브라우저에서 다시 열면 이어집니다. 다른 기기와는 별도로 저장돼요. 시크릿 모드 종료나 사이트 데이터 삭제 시 기록이 지워질 수 있어요.</p><p>인터넷에 게시한 뒤, Android·PC에서는 브라우저의 ‘앱 설치’를, iPhone에서는 Safari의 공유 메뉴 → ‘홈 화면에 추가’를 이용해 보세요.</p></details>
+    <button id="install" type="button" hidden>앱으로 설치하기</button>
+  </main>
+  <script>
+    const storageKey = 'one-more-counter-v1';
+    const countElement = document.getElementById('count');
+    const statusElement = document.getElementById('status');
+    const incrementButton = document.getElementById('increment');
+    let count = 0;
+    let storageAvailable = true;
+    function parseCount(value) {
+      if (value === null) return 0;
+      const parsed = Number(value);
+      return Number.isSafeInteger(parsed) && parsed >= 0 ? parsed : 0;
+    }
+    function readStoredCount() {
+      try { return parseCount(localStorage.getItem(storageKey)); }
+      catch { storageAvailable = false; return count; }
+    }
+    function render() {
+      countElement.textContent = count.toLocaleString('ko-KR');
+      incrementButton.disabled = count >= Number.MAX_SAFE_INTEGER;
+      if (!storageAvailable) statusElement.textContent = '저장을 사용할 수 없어 이번에 연 동안만 셉니다. 브라우저의 저장 허용 설정을 확인해 주세요.';
+      else if (incrementButton.disabled) statusElement.textContent = '저장할 수 있는 최대 숫자에 도달했어요.';
+      else statusElement.textContent = '누른 값은 이 브라우저에 저장돼요.';
+    }
+    async function increment() {
+      function update() {
+        if (storageAvailable) count = readStoredCount();
+        if (count >= Number.MAX_SAFE_INTEGER) return;
+        count += 1;
+        try { localStorage.setItem(storageKey, String(count)); }
+        catch { storageAvailable = false; }
+        render();
+      }
+      if (navigator.locks && location.protocol !== 'file:') await navigator.locks.request(storageKey, update);
+      else update();
+    }
+    count = readStoredCount();
+    render();
+    incrementButton.addEventListener('click', increment);
+    window.addEventListener('storage', event => {
+      if (event.key === storageKey || event.key === null) { count = readStoredCount(); render(); }
+    });
+    if ('serviceWorker' in navigator && ['https:', 'http:'].includes(location.protocol)) {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    }
+    let installPrompt;
+    const installButton = document.getElementById('install');
+    window.addEventListener('beforeinstallprompt', event => {
+      event.preventDefault();
+      installPrompt = event;
+      installButton.hidden = false;
+    });
+    installButton.addEventListener('click', async () => {
+      if (!installPrompt) return;
+      await installPrompt.prompt();
+      installPrompt = null;
+      installButton.hidden = true;
+    });
+    window.addEventListener('appinstalled', () => { installButton.hidden = true; });
+  </script>
+</body>
+</html>

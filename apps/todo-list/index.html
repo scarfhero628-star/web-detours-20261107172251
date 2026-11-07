@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>하나씩, 할 일</title>
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; background: #f4f2ed; color: #343c32; font-family: 'Malgun Gothic', system-ui, sans-serif; }
+main { width: min(100% - 40px, 600px); margin: 0 auto; padding: 80px 0; }
+.eyebrow { font-size: 12px; letter-spacing: .16em; color: #819074; }
+h1 { margin: 12px 0; font-size: 36px; letter-spacing: -.05em; }
+.intro { margin: 0 0 32px; color: #85887d; font-size: 14px; }
+form { display: flex; gap: 10px; }
+input[type=text] { min-width: 0; flex: 1; background: #fffdf8; border: 1px solid #d8dbce; border-radius: 14px; padding: 16px; font: inherit; color: inherit; }
+button { border: 0; border-radius: 12px; padding: 12px 20px; font: 600 15px 'Malgun Gothic', system-ui, sans-serif; cursor: pointer; background: #657654; color: white; }
+input:disabled, button:disabled { opacity: .45; cursor: not-allowed; }
+button:hover { filter: brightness(.94); }
+button:active { transform: scale(.97); }
+button:focus-visible, input:focus-visible { outline: 3px solid #a5b395; outline-offset: 3px; }
+.summary { margin: 27px 0 12px; font-size: 13px; color: #7e8675; }
+ul { margin: 0; padding: 0; list-style: none; }
+li { display: flex; align-items: center; gap: 16px; padding: 18px 0; border-bottom: 1px solid #dde0d5; }
+li label { display: flex; align-items: center; gap: 14px; flex: 1; min-width: 0; cursor: pointer; }
+input[type=checkbox] { flex-shrink: 0; width: 21px; height: 21px; margin: 0; accent-color: #657654; cursor: pointer; }
+.task-text { overflow-wrap: anywhere; line-height: 1.7; }
+li.done .task-text { text-decoration: line-through; color: #9a9f91; }
+.delete { flex-shrink: 0; background: transparent; color: #9a7d73; font-size: 12px; padding: 9px 10px; }
+.empty { padding: 45px 12px; text-align: center; color: #969b8e; font-size: 14px; line-height: 1.8; }
+#notice { min-height: 22px; font-size: 12px; color: #9a6e52; }
+@media(max-width: 450px) { main { padding-top: 48px; } button { padding-inline: 16px; } }
+</style>
+</head>
+<body>
+<main>
+<p class="eyebrow">ONE THING AT A TIME</p>
+<h1>하나씩, 할 일</h1>
+<p class="intro">적어 두고, 하나씩 해내요.</p>
+<form id="add-form">
+  <input id="new-task" type="text" maxlength="500" aria-label="새 할 일" placeholder="어떤 일을 할까요?" autocomplete="off" required>
+  <button type="submit">추가</button>
+</form>
+<p id="limit-message" role="status" aria-live="polite" style="color: #7e8675; font-size: 14px;"></p>
+<p class="summary" id="summary" role="status" aria-live="polite"></p>
+<ul id="tasks" aria-label="할 일 목록"></ul>
+<p id="empty" class="empty">아직 할 일이 없어요.<br>작은 일 하나부터 적어 보세요.</p>
+<p id="notice" role="status"></p>
+</main>
+<script>
+const key = 'personal-todo-list-v1';
+const input = document.getElementById('new-task');
+const list = document.getElementById('tasks');
+const notice = document.getElementById('notice');
+let tasks = [];
+try {
+  const saved = JSON.parse(localStorage.getItem(key) || '[]');
+  if (Array.isArray(saved)) tasks = saved.filter(task => task && typeof task.text === 'string' && typeof task.done === 'boolean').map(task => ({text: task.text, done: task.done}));
+} catch { notice.textContent = '저장된 목록을 불러올 수 없어요. 현재 창에서는 사용할 수 있습니다.'; }
+function save() {
+  try { localStorage.setItem(key, JSON.stringify(tasks)); notice.textContent = ''; }
+  catch { notice.textContent = '이 브라우저에서는 저장할 수 없어요. 창을 닫으면 목록이 사라질 수 있습니다.'; }
+}
+function summary() {
+  const full = tasks.length >= 5;
+  input.disabled = full;
+  document.querySelector('#add-form button').disabled = full;
+  document.getElementById('limit-message').textContent = full ? '오늘은 다섯 개면 충분해요' : '';
+  const done = tasks.filter(task => task.done).length;
+  document.getElementById('summary').textContent = `전체 ${tasks.length}개 · 완료 ${done}개 · 남은 일 ${tasks.length - done}개`;
+  document.getElementById('empty').hidden = tasks.length > 0;
+}
+function render() {
+  list.replaceChildren();
+  tasks.forEach(task => {
+    const row = document.createElement('li');
+    row.classList.toggle('done', task.done);
+    const label = document.createElement('label');
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.checked = task.done;
+    const text = document.createElement('span');
+    text.className = 'task-text';
+    text.textContent = task.text;
+    label.append(checkbox, text);
+    checkbox.addEventListener('change', () => {
+      task.done = checkbox.checked;
+      row.classList.toggle('done', task.done);
+      save(); summary();
+    });
+    const remove = document.createElement('button');
+    remove.type = 'button';
+    remove.className = 'delete';
+    remove.textContent = '삭제';
+    remove.setAttribute('aria-label', `${task.text} 삭제`);
+    remove.addEventListener('click', () => {
+      const index = tasks.indexOf(task);
+      tasks.splice(index, 1);
+      save(); render();
+      const next = list.children[Math.min(index, tasks.length - 1)];
+      if (next) next.querySelector('.delete').focus(); else input.focus();
+    });
+    row.append(label, remove);
+    list.append(row);
+  });
+  summary();
+}
+document.getElementById('add-form').addEventListener('submit', event => {
+  event.preventDefault();
+  if (tasks.length >= 5) return;
+  const text = input.value.trim();
+  if (!text) { input.value = ''; input.focus(); return; }
+  tasks.push({text, done: false});
+  save(); render();
+  input.value = '';
+  if (!input.disabled) input.focus();
+});
+render();
+</script>
+</body>
+</html>
